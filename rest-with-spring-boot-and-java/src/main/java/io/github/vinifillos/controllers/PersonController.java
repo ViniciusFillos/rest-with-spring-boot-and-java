@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/person")
 public class PersonController {
@@ -18,4 +20,8 @@ public class PersonController {
         return personService.findById(id);
     }
 
+    @GetMapping()
+    public List<Person> findAll() {
+        return personService.findAll();
+    }
 }
