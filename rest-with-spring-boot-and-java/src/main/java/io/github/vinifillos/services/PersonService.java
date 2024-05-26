@@ -1,61 +1,55 @@
 package io.github.vinifillos.services;
 
+import io.github.vinifillos.exceptions.ResourceNotFoundException;
 import io.github.vinifillos.model.Person;
+import io.github.vinifillos.repositories.PersonRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 @Service
 public class PersonService {
 
-    private static final AtomicLong counter = new AtomicLong();
+    @Autowired
+    private PersonRepository personRepository;
     private Logger logger = Logger.getLogger(PersonService.class.getName());
 
     public List<Person> findAll() {
-        logger.info("Finding All people!");
-        List<Person> persons = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            Person person = mockPerson(i);
-            persons.add(person);
-        }
-        return persons;
+        logger.info("Finding all people!");
+
+        return personRepository.findAll();
     }
 
-    public Person findById(String id) {
+    public Person findById(Long id) {
         logger.info("Finding one person!");
-        Person person = new Person();
-        person.setId(counter.incrementAndGet());
-        person.setFirstName("Vinicius");
-        person.setLastName("Fillos");
-        person.setAddress("Irati - Paraná - Brasil");
-        person.setGender("Male");
-        return person;
+
+        return personRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
     }
 
-    private Person mockPerson(int i) {
-        Person person = new Person();
-        person.setId(counter.incrementAndGet());
-        person.setFirstName("Person name - "+i);
-        person.setLastName("Last name - "+i);
-        person.setAddress("Some adrress in Brasil "+i);
-        person.setGender("Male");
-        return person;
-    }
 
     public Person create(Person person) {
         logger.info("Creating one person!");
-        return person;
+        return personRepository.save(person);
     }
 
     public Person update(Person person) {
         logger.info("Updating one person!");
-        return person;
+        Person entity = findById(person.getId());
+
+        entity.setAddress(person.getAddress());
+        entity.setGender(person.getGender());
+        entity.setFirstName(person.getFirstName());
+        entity.setLastName(person.getLastName());
+
+        return personRepository.save(entity);
     }
 
-    public void delete(String id) {
-        logger.info("Deleting one person!");
+    public void delete(Long id) {
+        var entity = findById(id);
+        personRepository.delete(entity);
     }
 }
