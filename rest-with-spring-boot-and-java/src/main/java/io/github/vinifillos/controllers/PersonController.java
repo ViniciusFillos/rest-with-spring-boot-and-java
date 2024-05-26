@@ -1,6 +1,6 @@
 package io.github.vinifillos.controllers;
 
-import io.github.vinifillos.model.Person;
+import io.github.vinifillos.model.dto.PersonDto;
 import io.github.vinifillos.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,22 +16,22 @@ public class PersonController {
     private PersonService personService;
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Person findById(@PathVariable(value = "id") Long id) {
+    public PersonDto findById(@PathVariable(value = "id") Long id) {
         return personService.findById(id);
     }
 
     @GetMapping()
-    public List<Person> findAll() {
+    public List<PersonDto> findAll() {
         return personService.findAll();
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Person create(@RequestBody Person person) {
+    public PersonDto create(@RequestBody PersonDto person) {
         return personService.create(person);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Person update(@RequestBody Person person) {
+    public PersonDto update(@RequestBody PersonDto person) {
         return personService.update(person);
     }
 
