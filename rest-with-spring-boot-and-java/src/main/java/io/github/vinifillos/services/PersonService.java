@@ -2,6 +2,7 @@ package io.github.vinifillos.services;
 
 import io.github.vinifillos.exceptions.ResourceNotFoundException;
 import io.github.vinifillos.mapper.ModelMapper;
+import io.github.vinifillos.mapper.custom.PersonMapper;
 import io.github.vinifillos.model.Person;
 import io.github.vinifillos.model.dtoV1.PersonDtoV1;
 import io.github.vinifillos.model.dtoV2.PersonDtoV2;
@@ -18,6 +19,8 @@ public class PersonService {
     @Autowired
     private PersonRepository personRepository;
     private Logger logger = Logger.getLogger(PersonService.class.getName());
+    @Autowired
+    PersonMapper personMapper;
 
     public List<PersonDtoV1> findAll() {
         logger.info("Finding all people!");
@@ -43,8 +46,8 @@ public class PersonService {
 
     public PersonDtoV2 createV2(PersonDtoV2 person) {
         logger.info("Creating one person with V2!");
-        var entity = ModelMapper.parseObject(person, Person.class);
-        var dto = ModelMapper.parseObject(personRepository.save(entity), PersonDtoV2.class);
+        var entity = personMapper.convertDtoToEntity(person);
+        var dto = personMapper.convertEntityToDto(personRepository.save(entity));
         return dto;
     }
 
