@@ -1,7 +1,7 @@
 package io.github.vinifillos.unitTests.mocks;
 
 import io.github.vinifillos.model.Person;
-import io.github.vinifillos.model.dto.PersonDto;
+import io.github.vinifillos.model.dtoV1.PersonDtoV1;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class MockPerson {
         return mockEntity(0);
     }
     
-    public PersonDto mockVO() {
+    public PersonDtoV1 mockVO() {
         return mockVO(0);
     }
     
@@ -27,8 +27,8 @@ public class MockPerson {
         return persons;
     }
 
-    public List<PersonDto> mockVOList() {
-        List<PersonDto> persons = new ArrayList<>();
+    public List<PersonDtoV1> mockVOList() {
+        List<PersonDtoV1> persons = new ArrayList<>();
         for (int i = 0; i < 14; i++) {
             persons.add(mockVO(i));
         }
@@ -45,8 +45,8 @@ public class MockPerson {
         return person;
     }
 
-    public PersonDto mockVO(Integer number) {
-        PersonDto person = new PersonDto();
+    public PersonDtoV1 mockVO(Integer number) {
+        PersonDtoV1 person = new PersonDtoV1();
         person.setAddress("Addres Test" + number);
         person.setFirstName("First Name Test" + number);
         person.setGender(((number % 2)==0) ? "Male" : "Female");

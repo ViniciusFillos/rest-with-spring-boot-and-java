@@ -1,8 +1,8 @@
-package io.github.vinifillos.model.dto;
+package io.github.vinifillos.model.dtoV1;
 
 import java.io.Serializable;
 
-public class PersonDto implements Serializable {
+public class PersonDtoV1 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -12,7 +12,7 @@ public class PersonDto implements Serializable {
     private String address;
     private String gender;
 
-    public PersonDto() {
+    public PersonDtoV1() {
     }
 
     public Long getId() {
@@ -60,7 +60,7 @@ public class PersonDto implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PersonDto person = (PersonDto) o;
+        PersonDtoV1 person = (PersonDtoV1) o;
         return id.equals(person.id);
     }
 

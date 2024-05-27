@@ -3,7 +3,8 @@ package io.github.vinifillos.services;
 import io.github.vinifillos.exceptions.ResourceNotFoundException;
 import io.github.vinifillos.mapper.ModelMapper;
 import io.github.vinifillos.model.Person;
-import io.github.vinifillos.model.dto.PersonDto;
+import io.github.vinifillos.model.dtoV1.PersonDtoV1;
+import io.github.vinifillos.model.dtoV2.PersonDtoV2;
 import io.github.vinifillos.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,29 +19,36 @@ public class PersonService {
     private PersonRepository personRepository;
     private Logger logger = Logger.getLogger(PersonService.class.getName());
 
-    public List<PersonDto> findAll() {
+    public List<PersonDtoV1> findAll() {
         logger.info("Finding all people!");
 
-        return ModelMapper.parseListObjects(personRepository.findAll(), PersonDto.class);
+        return ModelMapper.parseListObjects(personRepository.findAll(), PersonDtoV1.class);
     }
 
-    public PersonDto findById(Long id) {
+    public PersonDtoV1 findById(Long id) {
         logger.info("Finding one person!");
 
         var entity = personRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
-        return ModelMapper.parseObject(entity, PersonDto.class);
+        return ModelMapper.parseObject(entity, PersonDtoV1.class);
     }
 
 
-    public PersonDto create(PersonDto person) {
+    public PersonDtoV1 create(PersonDtoV1 person) {
         logger.info("Creating one person!");
         var entity = ModelMapper.parseObject(person, Person.class);
-        var dto = ModelMapper.parseObject(personRepository.save(entity), PersonDto.class);
+        var dto = ModelMapper.parseObject(personRepository.save(entity), PersonDtoV1.class);
         return dto;
     }
 
-    public PersonDto update(PersonDto person) {
+    public PersonDtoV2 createV2(PersonDtoV2 person) {
+        logger.info("Creating one person with V2!");
+        var entity = ModelMapper.parseObject(person, Person.class);
+        var dto = ModelMapper.parseObject(personRepository.save(entity), PersonDtoV2.class);
+        return dto;
+    }
+
+    public PersonDtoV1 update(PersonDtoV1 person) {
         logger.info("Updating one person!");
         var entity = personRepository.findById(person.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
@@ -50,7 +58,7 @@ public class PersonService {
         entity.setFirstName(person.getFirstName());
         entity.setLastName(person.getLastName());
 
-        var dto = ModelMapper.parseObject(personRepository.save(entity), PersonDto.class);
+        var dto = ModelMapper.parseObject(personRepository.save(entity), PersonDtoV1.class);
         return dto;
     }
 
