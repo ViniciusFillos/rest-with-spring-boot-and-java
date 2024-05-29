@@ -1,12 +1,15 @@
 package io.github.vinifillos.model.dto;
 
-import java.io.Serializable;
+import org.springframework.hateoas.RepresentationModel;
 
-public class PersonDto implements Serializable {
+import java.io.Serializable;
+import java.util.Objects;
+
+public class PersonDto extends RepresentationModel<PersonDto> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Long key;
     private String firstName;
     private String lastName;
     private String address;
@@ -15,12 +18,12 @@ public class PersonDto implements Serializable {
     public PersonDto() {
     }
 
-    public Long getId() {
-        return id;
+    public Long getKey() {
+        return key;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setKey(Long key) {
+        this.key = key;
     }
 
     public String getFirstName() {
@@ -59,13 +62,20 @@ public class PersonDto implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
-        PersonDto person = (PersonDto) o;
-        return id.equals(person.id);
+        PersonDto personDto = (PersonDto) o;
+        return Objects.equals(key, personDto.key) && Objects.equals(firstName, personDto.firstName) && Objects.equals(lastName, personDto.lastName) && Objects.equals(address, personDto.address) && Objects.equals(gender, personDto.gender);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(key);
+        result = 31 * result + Objects.hashCode(firstName);
+        result = 31 * result + Objects.hashCode(lastName);
+        result = 31 * result + Objects.hashCode(address);
+        result = 31 * result + Objects.hashCode(gender);
+        return result;
     }
 }

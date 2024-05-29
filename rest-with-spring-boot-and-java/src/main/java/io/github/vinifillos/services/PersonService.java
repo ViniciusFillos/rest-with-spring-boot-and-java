@@ -1,11 +1,14 @@
 package io.github.vinifillos.services;
 
+import io.github.vinifillos.controllers.PersonController;
 import io.github.vinifillos.exceptions.ResourceNotFoundException;
 import io.github.vinifillos.mapper.ModelMapper;
 import io.github.vinifillos.model.Person;
 import io.github.vinifillos.model.dto.PersonDto;
 import io.github.vinifillos.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +32,9 @@ public class PersonService {
 
         var entity = personRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
-        return ModelMapper.parseObject(entity, PersonDto.class);
+        PersonDto dto = ModelMapper.parseObject(entity, PersonDto.class);
+        dto.add(linkTo(methodOn(PersonController.class ).findById(id)).withSelfRel());
+        return dto;
     }
 
 
@@ -42,7 +47,7 @@ public class PersonService {
 
     public PersonDto update(PersonDto person) {
         logger.info("Updating one person!");
-        var entity = personRepository.findById(person.getId())
+        var entity = personRepository.findById(person.getKey())
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
         entity.setAddress(person.getAddress());
