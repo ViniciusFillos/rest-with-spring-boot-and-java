@@ -23,7 +23,7 @@ public class ConverterTest {
 
     @Test
     public void parseEntityToVOTest() {
-        PersonDto output = ModelMapper.parseObject(inputObject.mockEntity(), PersonDto.class);
+        PersonDto output = ModelMapper.fromPersonToDto(inputObject.mockEntity());
         assertEquals(Long.valueOf(0L), output.getKey());
         assertEquals("First Name Test0", output.getFirstName());
         assertEquals("Last Name Test0", output.getLastName());
@@ -33,7 +33,7 @@ public class ConverterTest {
 
     @Test
     public void parseEntityListToVOListTest() {
-        List<PersonDto> outputList = ModelMapper.parseListObjects(inputObject.mockEntityList(), PersonDto.class);
+        List<PersonDto> outputList = ModelMapper.parseListPersonToDto(inputObject.mockEntityList());
         PersonDto outputZero = outputList.get(0);
         
         assertEquals(Long.valueOf(0L), outputZero.getKey());
@@ -61,7 +61,7 @@ public class ConverterTest {
 
     @Test
     public void parseVOToEntityTest() {
-        Person output = ModelMapper.parseObject(inputObject.mockVO(), Person.class);
+        Person output = ModelMapper.fromDtoToPerson(inputObject.mockVO());
         assertEquals(Long.valueOf(0L), output.getId());
         assertEquals("First Name Test0", output.getFirstName());
         assertEquals("Last Name Test0", output.getLastName());
@@ -71,7 +71,7 @@ public class ConverterTest {
 
     @Test
     public void parserVOListToEntityListTest() {
-        List<Person> outputList = ModelMapper.parseListObjects(inputObject.mockVOList(), Person.class);
+        List<Person> outputList = ModelMapper.parseListDtoToPerson(inputObject.mockVOList());
         Person outputZero = outputList.get(0);
         
         assertEquals(Long.valueOf(0L), outputZero.getId());
