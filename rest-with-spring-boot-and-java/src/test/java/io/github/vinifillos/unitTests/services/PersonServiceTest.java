@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -102,12 +103,11 @@ class PersonServiceTest {
 
     @Test
     void create_WithValidData_ReturnPerson() {
-        Person entity = input.mockEntity(1);
-        var persisted = entity;
+        Person persisted = input.mockEntity(1);
         persisted.setId(1L);
         PersonDto dto = input.mockDto(1);
         dto.setKey(1L);
-        when(personRepository.save(entity)).thenReturn(persisted);
+        when(personRepository.save(any(Person.class))).thenReturn(persisted);
 
         var result = service.create(dto);
 
