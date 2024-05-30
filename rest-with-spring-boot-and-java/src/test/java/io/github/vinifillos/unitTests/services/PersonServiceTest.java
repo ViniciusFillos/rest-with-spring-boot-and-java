@@ -5,7 +5,7 @@ import io.github.vinifillos.model.Person;
 import io.github.vinifillos.model.dto.PersonDto;
 import io.github.vinifillos.repositories.PersonRepository;
 import io.github.vinifillos.services.PersonService;
-import io.github.vinifillos.unitTests.mocks.MockPerson;
+import io.github.vinifillos.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

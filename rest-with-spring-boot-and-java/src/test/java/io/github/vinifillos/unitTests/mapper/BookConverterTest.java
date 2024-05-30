@@ -3,7 +3,7 @@ package io.github.vinifillos.unitTests.mapper;
 import io.github.vinifillos.mapper.BookMapper;
 import io.github.vinifillos.model.Book;
 import io.github.vinifillos.model.dto.BookDto;
-import io.github.vinifillos.unitTests.mocks.MockBook;
+import io.github.vinifillos.mocks.MockBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

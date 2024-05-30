@@ -10,7 +10,7 @@ import io.github.vinifillos.model.dto.PersonDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.github.vinifillos.unitTests.mocks.MockPerson;
+import io.github.vinifillos.mocks.MockPerson;
 
 class PersonConverterTest {
     

@@ -1,4 +1,4 @@
-package io.github.vinifillos.unitTests.mocks;
+package io.github.vinifillos.mocks;
 
 import io.github.vinifillos.model.Person;
 import io.github.vinifillos.model.dto.PersonDto;

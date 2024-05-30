@@ -5,7 +5,7 @@ import io.github.vinifillos.model.Book;
 import io.github.vinifillos.model.dto.BookDto;
 import io.github.vinifillos.repositories.BookRepository;
 import io.github.vinifillos.services.BookService;
-import io.github.vinifillos.unitTests.mocks.MockBook;
+import io.github.vinifillos.mocks.MockBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
