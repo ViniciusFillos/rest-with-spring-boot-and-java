@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import io.github.vinifillos.mapper.ModelMapper;
+import io.github.vinifillos.mapper.PersonMapper;
 import io.github.vinifillos.model.Person;
 import io.github.vinifillos.model.dto.PersonDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ public class ConverterTest {
 
     @Test
     public void parseEntityToVOTest() {
-        PersonDto output = ModelMapper.fromPersonToDto(inputObject.mockEntity());
+        PersonDto output = PersonMapper.fromPersonToDto(inputObject.mockEntity());
         assertEquals(Long.valueOf(0L), output.getKey());
         assertEquals("First Name Test0", output.getFirstName());
         assertEquals("Last Name Test0", output.getLastName());
@@ -33,7 +33,7 @@ public class ConverterTest {
 
     @Test
     public void parseEntityListToVOListTest() {
-        List<PersonDto> outputList = ModelMapper.parseListPersonToDto(inputObject.mockEntityList());
+        List<PersonDto> outputList = PersonMapper.parseListPersonToDto(inputObject.mockEntityList());
         PersonDto outputZero = outputList.get(0);
         
         assertEquals(Long.valueOf(0L), outputZero.getKey());
@@ -61,7 +61,7 @@ public class ConverterTest {
 
     @Test
     public void parseVOToEntityTest() {
-        Person output = ModelMapper.fromDtoToPerson(inputObject.mockDto());
+        Person output = PersonMapper.fromDtoToPerson(inputObject.mockDto());
         assertEquals(Long.valueOf(0L), output.getId());
         assertEquals("First Name Test0", output.getFirstName());
         assertEquals("Last Name Test0", output.getLastName());
@@ -71,7 +71,7 @@ public class ConverterTest {
 
     @Test
     public void parserVOListToEntityListTest() {
-        List<Person> outputList = ModelMapper.parseListDtoToPerson(inputObject.mockDtoList());
+        List<Person> outputList = PersonMapper.parseListDtoToPerson(inputObject.mockDtoList());
         Person outputZero = outputList.get(0);
         
         assertEquals(Long.valueOf(0L), outputZero.getId());

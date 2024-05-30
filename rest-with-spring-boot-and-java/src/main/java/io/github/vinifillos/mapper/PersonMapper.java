@@ -6,11 +6,9 @@ import io.github.vinifillos.model.dto.PersonDto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelMapper {
+public class PersonMapper {
 
     private static org.modelmapper.ModelMapper mapper = new org.modelmapper.ModelMapper();
-
-
 
     public static Person fromDtoToPerson(PersonDto dto) {
         Person person = mapper.map(dto, Person.class);
