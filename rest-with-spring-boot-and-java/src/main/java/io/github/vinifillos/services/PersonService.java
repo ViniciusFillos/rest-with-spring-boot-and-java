@@ -1,6 +1,7 @@
 package io.github.vinifillos.services;
 
 import io.github.vinifillos.controllers.PersonController;
+import io.github.vinifillos.exceptions.RequiredObjectIsNullException;
 import io.github.vinifillos.exceptions.ResourceNotFoundException;
 import io.github.vinifillos.mapper.ModelMapper;
 import io.github.vinifillos.model.dto.PersonDto;
@@ -42,6 +43,7 @@ public class PersonService {
 
 
     public PersonDto create(PersonDto person) {
+        if(person == null) throw new RequiredObjectIsNullException();
         logger.info("Creating one person!");
         var entity = ModelMapper.fromDtoToPerson(person);
         var dto = ModelMapper.fromPersonToDto(personRepository.save(entity));
@@ -50,6 +52,7 @@ public class PersonService {
     }
 
     public PersonDto update(PersonDto person) {
+        if(person == null) throw new RequiredObjectIsNullException();
         logger.info("Updating one person!");
         var entity = personRepository.findById(person.getKey())
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));

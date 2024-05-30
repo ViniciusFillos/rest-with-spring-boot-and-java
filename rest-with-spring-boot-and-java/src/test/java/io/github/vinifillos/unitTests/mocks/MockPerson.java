@@ -15,8 +15,8 @@ public class MockPerson {
         return mockEntity(0);
     }
     
-    public PersonDto mockVO() {
-        return mockVO(0);
+    public PersonDto mockDto() {
+        return mockDto(0);
     }
     
     public List<Person> mockEntityList() {
@@ -27,10 +27,10 @@ public class MockPerson {
         return persons;
     }
 
-    public List<PersonDto> mockVOList() {
+    public List<PersonDto> mockDtoList() {
         List<PersonDto> persons = new ArrayList<>();
         for (int i = 0; i < 14; i++) {
-            persons.add(mockVO(i));
+            persons.add(mockDto(i));
         }
         return persons;
     }
@@ -45,7 +45,7 @@ public class MockPerson {
         return person;
     }
 
-    public PersonDto mockVO(Integer number) {
+    public PersonDto mockDto(Integer number) {
         PersonDto person = new PersonDto();
         person.setAddress("Addres Test" + number);
         person.setFirstName("First Name Test" + number);
