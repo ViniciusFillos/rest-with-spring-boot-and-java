@@ -1,4 +1,4 @@
-package io.github.vinifillos.unitTests.mocks;
+package io.github.vinifillos.mocks;
 
 import io.github.vinifillos.model.Person;
 import io.github.vinifillos.model.dto.PersonDto;
@@ -20,7 +20,7 @@ public class MockPerson {
     }
     
     public List<Person> mockEntityList() {
-        List<Person> persons = new ArrayList<Person>();
+        List<Person> persons = new ArrayList<>();
         for (int i = 0; i < 14; i++) {
             persons.add(mockEntity(i));
         }

@@ -10,9 +10,9 @@ import io.github.vinifillos.model.dto.PersonDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.github.vinifillos.unitTests.mocks.MockPerson;
+import io.github.vinifillos.mocks.MockPerson;
 
-public class ConverterTest {
+class PersonConverterTest {
     
     MockPerson inputObject;
 
@@ -22,7 +22,7 @@ public class ConverterTest {
     }
 
     @Test
-    public void parseEntityToVOTest() {
+    void parseEntityToDtoTest() {
         PersonDto output = PersonMapper.fromPersonToDto(inputObject.mockEntity());
         assertEquals(Long.valueOf(0L), output.getKey());
         assertEquals("First Name Test0", output.getFirstName());
@@ -32,9 +32,9 @@ public class ConverterTest {
     }
 
     @Test
-    public void parseEntityListToVOListTest() {
+    void parseEntityListToDtoListTest() {
         List<PersonDto> outputList = PersonMapper.parseListPersonToDto(inputObject.mockEntityList());
-        PersonDto outputZero = outputList.get(0);
+        PersonDto outputZero = outputList.getFirst();
         
         assertEquals(Long.valueOf(0L), outputZero.getKey());
         assertEquals("First Name Test0", outputZero.getFirstName());
@@ -60,7 +60,7 @@ public class ConverterTest {
     }
 
     @Test
-    public void parseVOToEntityTest() {
+    void parseDtoToEntityTest() {
         Person output = PersonMapper.fromDtoToPerson(inputObject.mockDto());
         assertEquals(Long.valueOf(0L), output.getId());
         assertEquals("First Name Test0", output.getFirstName());
@@ -70,9 +70,9 @@ public class ConverterTest {
     }
 
     @Test
-    public void parserVOListToEntityListTest() {
+    void parserDtoListToEntityListTest() {
         List<Person> outputList = PersonMapper.parseListDtoToPerson(inputObject.mockDtoList());
-        Person outputZero = outputList.get(0);
+        Person outputZero = outputList.getFirst();
         
         assertEquals(Long.valueOf(0L), outputZero.getId());
         assertEquals("First Name Test0", outputZero.getFirstName());
