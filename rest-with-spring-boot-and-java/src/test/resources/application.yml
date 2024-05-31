@@ -7,9 +7,14 @@ spring:
     hibernate:
       ddl-auto: none
     open-in-view: false
+
+cors:
+  originPatterns: http://localhost:8080,http://localhost:3000,http://vinifillos.com.br
+
 springdoc:
   paths-to-match: /api/**/v1/**
   swagger-ui:
     use-root-path: true
+
 server:
   port: 8888

@@ -23,6 +23,7 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @Operation(summary = "Finds a person", description = "Finds a person", tags = {"People"}, responses = {
             @ApiResponse(description = "Success", responseCode = "200",
                     content = @Content(schema = @Schema(implementation = PersonDto.class))),
@@ -54,6 +55,7 @@ public class PersonController {
         return personService.findAll();
     }
 
+    @CrossOrigin(origins = {"http://localhost:8080", "http://vinifillos.com.br"})
     @Operation(summary = "Creates a person", description = "Adds a new person by passing in a JSON, XML or YML representation of the person", tags = {"People"}, responses = {
             @ApiResponse(description = "Created", responseCode = "201",
                     content = @Content(schema = @Schema(implementation = PersonDto.class))),
