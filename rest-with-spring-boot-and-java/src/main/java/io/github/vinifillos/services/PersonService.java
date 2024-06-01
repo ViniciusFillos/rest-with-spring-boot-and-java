@@ -6,7 +6,7 @@ import io.github.vinifillos.exceptions.ResourceNotFoundException;
 import io.github.vinifillos.mapper.PersonMapper;
 import io.github.vinifillos.model.dto.PersonDto;
 import io.github.vinifillos.repositories.PersonRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
@@ -15,18 +15,17 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Service
+@RequiredArgsConstructor
 public class PersonService {
 
-    @Autowired
-    private PersonRepository personRepository;
-    private Logger logger = Logger.getLogger(PersonService.class.getName());
+    private final PersonRepository personRepository;
+    private final Logger logger = Logger.getLogger(PersonService.class.getName());
 
     public List<PersonDto> findAll() {
         logger.info("Finding all people!");
 
         var persons = PersonMapper.parseListPersonToDto(personRepository.findAll());
         persons
-                .stream()
                 .forEach(p -> p.add(linkTo(methodOn(PersonController.class ).findById(p.getKey())).withSelfRel()));
         return persons;
     }

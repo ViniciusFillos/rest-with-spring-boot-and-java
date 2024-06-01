@@ -2,14 +2,21 @@ package io.github.vinifillos.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Setter @Getter
+@NoArgsConstructor
 @JsonPropertyOrder({"id", "firstName", "lastName", "address", "gender"})
 public class PersonDto extends RepresentationModel<PersonDto> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("id")
@@ -18,49 +25,6 @@ public class PersonDto extends RepresentationModel<PersonDto> implements Seriali
     private String lastName;
     private String address;
     private String gender;
-
-    public PersonDto() {
-    }
-
-    public Long getKey() {
-        return key;
-    }
-
-    public void setKey(Long key) {
-        this.key = key;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
 
     @Override
     public boolean equals(Object o) {
