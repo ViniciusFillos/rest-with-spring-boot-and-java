@@ -1,4 +1,4 @@
-package io.github.vinifillos.serealizationConverter;
+package io.github.vinifillos.serealization_converter;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;

@@ -1,6 +1,6 @@
 package io.github.vinifillos.config;
 
-import io.github.vinifillos.serealizationConverter.YamlJackson2HttpMessageConverter;
+import io.github.vinifillos.serealization_converter.YamlJackson2HttpMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
