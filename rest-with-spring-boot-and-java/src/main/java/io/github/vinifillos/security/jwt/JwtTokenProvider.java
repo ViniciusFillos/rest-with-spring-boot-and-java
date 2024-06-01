@@ -1,4 +1,4 @@
-package io.github.vinifillos.security_jwt;
+package io.github.vinifillos.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -28,7 +28,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key:secret}")
     private String secretKey = "secret";
 
-    @Value("${security.jwt.token.expire-lenght:3600000}")
+    @Value("${security.jwt.token.expire-length:3600000}")
     private long validityInMilliseconds = 3600000;
 
     private final UserDetailsService userDetailsService;
@@ -87,7 +87,7 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken!=null && bearerToken.startsWith("Bearer ")) return bearerToken.substring("Bearer ".length());
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) return bearerToken.substring("Bearer ".length());
         return null;
     }
 
