@@ -2,15 +2,22 @@ package io.github.vinifillos.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 @JsonPropertyOrder({"id", "author", "launchDate", "price", "title"})
+@Getter @Setter
+@NoArgsConstructor
 public class BookDto extends RepresentationModel<BookDto> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("id")
@@ -19,49 +26,6 @@ public class BookDto extends RepresentationModel<BookDto> implements Serializabl
     private Date launchDate;
     private Double price;
     private String title;
-
-    public BookDto() {
-    }
-
-    public Long getKey() {
-        return key;
-    }
-
-    public void setKey(Long key) {
-        this.key = key;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public Date getLauchDate() {
-        return launchDate;
-    }
-
-    public void setLauchDate(Date lauchDate) {
-        this.launchDate = lauchDate;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     @Override
     public boolean equals(Object o) {

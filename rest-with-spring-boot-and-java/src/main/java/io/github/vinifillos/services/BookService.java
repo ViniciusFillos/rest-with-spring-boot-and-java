@@ -6,7 +6,7 @@ import io.github.vinifillos.exceptions.ResourceNotFoundException;
 import io.github.vinifillos.mapper.BookMapper;
 import io.github.vinifillos.model.dto.BookDto;
 import io.github.vinifillos.repositories.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,18 +16,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
-    @Autowired
-    private BookRepository bookRepository;
-    private Logger logger = Logger.getLogger(BookService.class.getName());
+    private final BookRepository bookRepository;
+    private  final Logger logger = Logger.getLogger(BookService.class.getName());
 
     public List<BookDto> findAll() {
         logger.info("Finding all books!");
 
         var books = BookMapper.parseListBookToDto(bookRepository.findAll());
         books
-                .stream()
                 .forEach(p -> p.add(linkTo(methodOn(BookController.class ).findById(p.getKey())).withSelfRel()));
         return books;
     }
@@ -61,7 +60,7 @@ public class BookService {
         entity.setAuthor(book.getAuthor());
         entity.setPrice(book.getPrice());
         entity.setTitle(book.getTitle());
-        entity.setLauchDate(book.getLauchDate());
+        entity.setLaunchDate(book.getLaunchDate());
 
         var dto = BookMapper.fromBookToDto(bookRepository.save(entity));
         dto.add(linkTo(methodOn(BookController.class ).findById(dto.getKey())).withSelfRel());

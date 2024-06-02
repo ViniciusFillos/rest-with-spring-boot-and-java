@@ -12,9 +12,17 @@ cors:
   originPatterns: http://localhost:8080,http://localhost:3000,http://vinifillos.com.br
 
 springdoc:
-  paths-to-match: /api/**/v1/**
+  paths-to-match:
+    - /auth/**
+    - /api/**/v1/**
   swagger-ui:
     use-root-path: true
 
 server:
   port: 8888
+
+security:
+  jwt:
+    token:
+      secret-key: 53cr37
+      expire-length: 3600000

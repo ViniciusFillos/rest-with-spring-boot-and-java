@@ -1,15 +1,24 @@
 package io.github.vinifillos.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name = "book")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter @Setter
 public class Book implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -23,57 +32,6 @@ public class Book implements Serializable {
     private Double price;
     @Column(name = "title", nullable = false, length = 200)
     private String title;
-
-    public Book() {
-    }
-
-    public Book(Long id, String author, Date lauchDate, Double price, String title) {
-        this.id = id;
-        this.author = author;
-        this.launchDate = lauchDate;
-        this.price = price;
-        this.title = title;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public Date getLauchDate() {
-        return launchDate;
-    }
-
-    public void setLauchDate(Date lauchDate) {
-        this.launchDate = lauchDate;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     @Override
     public boolean equals(Object o) {

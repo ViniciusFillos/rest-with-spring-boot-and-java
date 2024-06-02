@@ -36,7 +36,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(1)
-    void CreatePerson_WithValidCors_ReturnsPerson() throws JsonProcessingException {
+    void CreatePerson_WithValidCORS_ReturnsPerson() throws JsonProcessingException {
         mockPerson();
 
         specification = new RequestSpecBuilder()
@@ -79,7 +79,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(2)
-    void CreatePerson_WithInvalidCors_ReturnsInvalidCORSRequest() {
+    void CreatePerson_WithInvalidCORS_ReturnsInvalidCORSRequest() {
         mockPerson();
 
         specification = new RequestSpecBuilder()
@@ -150,7 +150,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void FindPerson_WithInvalidCORS_ReturnsInvalidCORSRequest() throws JsonProcessingException {
         mockPerson();
 
