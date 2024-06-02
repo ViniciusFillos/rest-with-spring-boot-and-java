@@ -60,7 +60,7 @@ public class BookService {
         entity.setAuthor(book.getAuthor());
         entity.setPrice(book.getPrice());
         entity.setTitle(book.getTitle());
-        entity.setLauchDate(book.getLauchDate());
+        entity.setLaunchDate(book.getLaunchDate());
 
         var dto = BookMapper.fromBookToDto(bookRepository.save(entity));
         dto.add(linkTo(methodOn(BookController.class ).findById(dto.getKey())).withSelfRel());

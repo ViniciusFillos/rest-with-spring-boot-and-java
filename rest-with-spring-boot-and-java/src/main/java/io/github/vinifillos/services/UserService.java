@@ -14,12 +14,8 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
-    private UserRepository personRepository;
+    private final UserRepository personRepository;
     private final Logger logger = Logger.getLogger(UserService.class.getName());
-
-    public UserService(UserRepository personRepository) {
-        this.personRepository = personRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

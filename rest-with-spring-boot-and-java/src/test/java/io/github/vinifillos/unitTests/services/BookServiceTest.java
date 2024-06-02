@@ -62,7 +62,7 @@ class BookServiceTest {
         assertEquals("Title Test0", bookZero.getTitle());
         assertEquals("Author Test0", bookZero.getAuthor());
         assertEquals(123.45D, bookZero.getPrice());
-        assertNotNull(bookZero.getLauchDate());
+        assertNotNull(bookZero.getLaunchDate());
 
         assertNotNull(bookSeven);
         assertNotNull(bookSeven.getKey());
@@ -71,7 +71,7 @@ class BookServiceTest {
         assertEquals("Title Test7", bookSeven.getTitle());
         assertEquals("Author Test7", bookSeven.getAuthor());
         assertEquals(123.45D, bookSeven.getPrice());
-        assertNotNull(bookSeven.getLauchDate());
+        assertNotNull(bookSeven.getLaunchDate());
 
 
         assertNotNull(bookFourteen);
@@ -81,7 +81,7 @@ class BookServiceTest {
         assertEquals("Title Test13", bookFourteen.getTitle());
         assertEquals("Author Test13", bookFourteen.getAuthor());
         assertEquals(123.45D, bookFourteen.getPrice());
-        assertNotNull(bookFourteen.getLauchDate());
+        assertNotNull(bookFourteen.getLaunchDate());
     }
 
     @Test
@@ -99,7 +99,7 @@ class BookServiceTest {
         assertEquals("Title Test1", result.getTitle());
         assertEquals("Author Test1", result.getAuthor());
         assertEquals(123.45D, result.getPrice());
-        assertNotNull(result.getLauchDate());
+        assertNotNull(result.getLaunchDate());
 
     }
 
@@ -120,7 +120,7 @@ class BookServiceTest {
         assertEquals("Title Test1", result.getTitle());
         assertEquals("Author Test1", result.getAuthor());
         assertEquals(123.45D, result.getPrice());
-        assertNotNull(result.getLauchDate());
+        assertNotNull(result.getLaunchDate());
     }
 
     @Test
@@ -150,7 +150,7 @@ class BookServiceTest {
         assertEquals("Title Test1", result.getTitle());
         assertEquals("Author Test1", result.getAuthor());
         assertEquals(123.45D, result.getPrice());
-        assertNotNull(result.getLauchDate());
+        assertNotNull(result.getLaunchDate());
     }
 
     @Test

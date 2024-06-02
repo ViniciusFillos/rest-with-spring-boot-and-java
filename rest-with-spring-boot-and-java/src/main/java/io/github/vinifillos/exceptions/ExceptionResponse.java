@@ -7,18 +7,18 @@ public class ExceptionResponse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Date timestanp;
+    private Date timestamp;
     private String message;
     private String details;
 
-    public ExceptionResponse(Date timestanp, String message, String details) {
-        this.timestanp = timestanp;
+    public ExceptionResponse(Date timestamp, String message, String details) {
+        this.timestamp = timestamp;
         this.message = message;
         this.details = details;
     }
 
-    public Date getTimestanp() {
-        return timestanp;
+    public Date getTimestamp() {
+        return timestamp;
     }
 
     public String getMessage() {
