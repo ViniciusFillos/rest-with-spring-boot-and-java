@@ -43,16 +43,16 @@ public class AuthService {
         }
     }
 
-//    @SuppressWarnings("rawtypes")
-//    public ResponseEntity refreshToken(String username, String refreshToken) {
-//        var user = userRepository.findByUsername(username);
-//
-//        var tokenResponse = new TokenDto();
-//        if (user != null) {
-//            tokenResponse = tokenProvider.refreshToken(refreshToken);
-//        } else {
-//            throw new UsernameNotFoundException("Username " + username + " not found!");
-//        }
-//        return ResponseEntity.ok(tokenResponse);
-//    }
+    @SuppressWarnings("rawtypes")
+    public ResponseEntity refreshToken(String username, String refreshToken) {
+        var user = userRepository.findByUsername(username);
+
+        TokenDto tokenResponse;
+        if (user != null) {
+            tokenResponse = tokenProvider.refreshToken(refreshToken);
+        } else {
+            throw new UsernameNotFoundException("Username " + username + " not found!");
+        }
+        return ResponseEntity.ok(tokenResponse);
+    }
 }
