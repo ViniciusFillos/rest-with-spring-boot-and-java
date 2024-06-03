@@ -38,7 +38,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(0)
-    void CreateToken_WithData_ReturnsToken() {
+    void CreateAccessToken() {
         AccountCredentialsDto user = new AccountCredentialsDto("leandro", "admin123");
         var accessToken = given()
                 .basePath("/auth/signin")
