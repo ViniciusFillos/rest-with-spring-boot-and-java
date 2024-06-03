@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.vinifillos.configs.ConfigTest;
+import io.github.vinifillos.integrationTests.dto.AccountCredentialsDto;
 import io.github.vinifillos.integrationTests.dto.PersonDto;
+import io.github.vinifillos.integrationTests.dto.TokenDto;
 import io.github.vinifillos.integrationTests.testContainers.AbstractIntegrationTest;
 
 import io.restassured.builder.RequestSpecBuilder;
@@ -35,21 +37,41 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Order(1)
-    void CreatePerson_WithValidCORS_ReturnsPerson() throws JsonProcessingException {
-        mockPerson();
+    @Order(0)
+    void CreateToken_WithData_ReturnsToken() {
+        AccountCredentialsDto user = new AccountCredentialsDto("leandro", "admin123");
+        var accessToken = given()
+                .basePath("/auth/signin")
+                .port(ConfigTest.SERVER_PORT)
+                .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .body(user)
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(TokenDto.class)
+                .getAccessToken();
 
         specification = new RequestSpecBuilder()
-                .addHeader(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_VINIFILLOS)
+                .addHeader(ConfigTest.HEADER_PARAM_AUTHORIZATION, "Bearer " + accessToken)
                 .setBasePath("/api/person/v1")
                 .setPort(ConfigTest.SERVER_PORT)
                 .addFilter(new RequestLoggingFilter(LogDetail.ALL))
                 .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
                 .build();
+    }
+
+    @Test
+    @Order(1)
+    void CreatePerson_WithValidCORS_ReturnsPerson() throws JsonProcessingException {
+        mockPerson();
 
         var content = given()
                 .spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .header(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_VINIFILLOS)
                 .body(personDto)
                 .when()
                 .post()
@@ -82,17 +104,10 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
     void CreatePerson_WithInvalidCORS_ReturnsInvalidCORSRequest() {
         mockPerson();
 
-        specification = new RequestSpecBuilder()
-                .addHeader(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_INVALID)
-                .setBasePath("/api/person/v1")
-                .setPort(ConfigTest.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
-
         var content = given()
                 .spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .header(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_INVALID)
                 .body(personDto)
                 .when()
                 .post()
@@ -111,17 +126,10 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
     void FindPerson_WithValidCORS_ReturnsPerson() throws JsonProcessingException {
         mockPerson();
 
-        specification = new RequestSpecBuilder()
-                .addHeader(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_VINIFILLOS)
-                .setBasePath("/api/person/v1")
-                .setPort(ConfigTest.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
-
         var content = given()
                 .spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .header(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_VINIFILLOS)
                 .pathParam("id", personDto.getId())
                 .when()
                 .get("{id}")
@@ -154,17 +162,10 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
     void FindPerson_WithInvalidCORS_ReturnsInvalidCORSRequest() throws JsonProcessingException {
         mockPerson();
 
-        specification = new RequestSpecBuilder()
-                .addHeader(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_INVALID)
-                .setBasePath("/api/person/v1")
-                .setPort(ConfigTest.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
-
         var content = given()
                 .spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .header(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_INVALID)
                 .pathParam("id", personDto.getId())
                 .when()
                 .get("{id}")
