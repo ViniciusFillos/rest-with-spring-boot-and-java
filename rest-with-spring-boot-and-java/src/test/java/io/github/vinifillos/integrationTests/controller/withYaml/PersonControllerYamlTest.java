@@ -284,7 +284,7 @@ public class PersonControllerYamlTest extends AbstractIntegrationTest {
         assertEquals("New York City, New York, US", foundPersonSix.getAddress());
         assertEquals("Male", foundPersonSix.getGender());
     }
-    
+
     @Test
     @Order(6)
     void testFindAllWithoutToken() {

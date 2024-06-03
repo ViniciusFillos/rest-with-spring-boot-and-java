@@ -1,48 +1,64 @@
 package io.github.vinifillos.integrationTests.controller.withXml;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.vinifillos.configs.ConfigTest;
 import io.github.vinifillos.integrationTests.dto.AccountCredentialsDto;
 import io.github.vinifillos.integrationTests.dto.PersonDto;
-import io.github.vinifillos.integrationTests.dto.TokenDto;
 import io.github.vinifillos.integrationTests.testContainers.AbstractIntegrationTest;
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import io.github.vinifillos.model.dto.security.TokenDto;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.*;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PersonControllerXmlTest extends AbstractIntegrationTest {
+@TestMethodOrder(OrderAnnotation.class)
+public class PersonControllerXmlTest extends AbstractIntegrationTest {
 
     private static RequestSpecification specification;
-    private static ObjectMapper objectMapper;
-    private static PersonDto personDto;
+    private static XmlMapper objectMapper;
+
+    private static PersonDto person;
 
     @BeforeAll
-    static void setup() {
-        objectMapper = new ObjectMapper();
+    public static void setup() {
+        objectMapper = new XmlMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        personDto = new PersonDto();
+        person = new PersonDto();
     }
 
     @Test
     @Order(0)
-    void CreateAccessToken() {
+     void authorization() {
+
         AccountCredentialsDto user = new AccountCredentialsDto("leandro", "admin123");
+
         var accessToken = given()
                 .basePath("/auth/signin")
                 .port(ConfigTest.SERVER_PORT)
-                .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .contentType(ConfigTest.CONTENT_TYPE_XML)
+                .accept(ConfigTest.CONTENT_TYPE_XML)
                 .body(user)
                 .when()
                 .post()
@@ -64,14 +80,13 @@ class PersonControllerXmlTest extends AbstractIntegrationTest {
 
     @Test
     @Order(1)
-    void CreatePerson_WithValidCORS_ReturnsPerson() throws JsonProcessingException {
+     void testCreate() throws JsonProcessingException {
         mockPerson();
 
-        var content = given()
-                .spec(specification)
-                .contentType(ConfigTest.CONTENT_TYPE_JSON)
-                .header(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_VINIFILLOS)
-                .body(personDto)
+        var content = given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_XML)
+                .accept(ConfigTest.CONTENT_TYPE_XML)
+                .body(person)
                 .when()
                 .post()
                 .then()
@@ -80,56 +95,70 @@ class PersonControllerXmlTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        PersonDto persistedPersonDto = objectMapper.readValue(content, PersonDto.class);
-        personDto = persistedPersonDto;
+        PersonDto persistedPerson = objectMapper.readValue(content, PersonDto.class);
+        person = persistedPerson;
 
-        assertNotNull(persistedPersonDto);
-        assertNotNull(persistedPersonDto.getId());
-        assertNotNull(persistedPersonDto.getFirstName());
-        assertNotNull(persistedPersonDto.getLastName());
-        assertNotNull(persistedPersonDto.getGender());
-        assertNotNull(persistedPersonDto.getAddress());
+        assertNotNull(persistedPerson);
 
-        assertTrue(persistedPersonDto.getId() > 0);
+        assertNotNull(persistedPerson.getId());
+        assertNotNull(persistedPerson.getFirstName());
+        assertNotNull(persistedPerson.getLastName());
+        assertNotNull(persistedPerson.getAddress());
+        assertNotNull(persistedPerson.getGender());
 
-        assertEquals("Richard", persistedPersonDto.getFirstName());
-        assertEquals("Stallman", persistedPersonDto.getLastName());
-        assertEquals("Male", persistedPersonDto.getGender());
-        assertEquals("New York City, New York, US", persistedPersonDto.getAddress());
+        assertTrue(persistedPerson.getId() > 0);
+
+        assertEquals("Nelson", persistedPerson.getFirstName());
+        assertEquals("Piquet", persistedPerson.getLastName());
+        assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
+        assertEquals("Male", persistedPerson.getGender());
     }
 
     @Test
     @Order(2)
-    void CreatePerson_WithInvalidCORS_ReturnsInvalidCORSRequest() {
-        mockPerson();
+     void testUpdate() throws JsonProcessingException {
+        person.setLastName("Piquet Souto Maior");
 
-        var content = given()
-                .spec(specification)
-                .contentType(ConfigTest.CONTENT_TYPE_JSON)
-                .header(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_INVALID)
-                .body(personDto)
+        var content = given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_XML)
+                .accept(ConfigTest.CONTENT_TYPE_XML)
+                .body(person)
                 .when()
                 .post()
                 .then()
-                .statusCode(403)
+                .statusCode(200)
                 .extract()
                 .body()
                 .asString();
 
-        assertNotNull(content);
-        assertEquals("Invalid CORS request", content);
+        PersonDto persistedPerson = objectMapper.readValue(content, PersonDto.class);
+        person = persistedPerson;
+
+        assertNotNull(persistedPerson);
+
+        assertNotNull(persistedPerson.getId());
+        assertNotNull(persistedPerson.getFirstName());
+        assertNotNull(persistedPerson.getLastName());
+        assertNotNull(persistedPerson.getAddress());
+        assertNotNull(persistedPerson.getGender());
+
+        assertEquals(person.getId(), persistedPerson.getId());
+
+        assertEquals("Nelson", persistedPerson.getFirstName());
+        assertEquals("Piquet Souto Maior", persistedPerson.getLastName());
+        assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
+        assertEquals("Male", persistedPerson.getGender());
     }
 
     @Test
     @Order(3)
-    void FindPerson_WithValidCORS_ReturnsPerson() throws JsonProcessingException {
+     void testFindById() throws JsonProcessingException {
         mockPerson();
 
-        var content = given()
-                .spec(specification)
-                .contentType(ConfigTest.CONTENT_TYPE_JSON)
-                .header(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_VINIFILLOS)
-                .pathParam("id", personDto.getId())
+        var content = given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_XML)
+                .accept(ConfigTest.CONTENT_TYPE_XML)
+                .pathParam("id", person.getId())
                 .when()
                 .get("{id}")
                 .then()
@@ -138,50 +167,113 @@ class PersonControllerXmlTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        PersonDto persistedPersonDto = objectMapper.readValue(content, PersonDto.class);
-        personDto = persistedPersonDto;
+        PersonDto persistedPerson = objectMapper.readValue(content, PersonDto.class);
+        person = persistedPerson;
 
-        assertNotNull(persistedPersonDto);
-        assertNotNull(persistedPersonDto.getId());
-        assertNotNull(persistedPersonDto.getFirstName());
-        assertNotNull(persistedPersonDto.getLastName());
-        assertNotNull(persistedPersonDto.getGender());
-        assertNotNull(persistedPersonDto.getAddress());
+        assertNotNull(persistedPerson);
 
-        assertTrue(persistedPersonDto.getId() > 0);
+        assertNotNull(persistedPerson.getId());
+        assertNotNull(persistedPerson.getFirstName());
+        assertNotNull(persistedPerson.getLastName());
+        assertNotNull(persistedPerson.getAddress());
+        assertNotNull(persistedPerson.getGender());
 
-        assertEquals("Richard", persistedPersonDto.getFirstName());
-        assertEquals("Stallman", persistedPersonDto.getLastName());
-        assertEquals("Male", persistedPersonDto.getGender());
-        assertEquals("New York City, New York, US", persistedPersonDto.getAddress());
+        assertEquals(person.getId(), persistedPerson.getId());
+
+        assertEquals("Nelson", persistedPerson.getFirstName());
+        assertEquals("Piquet Souto Maior", persistedPerson.getLastName());
+        assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
+        assertEquals("Male", persistedPerson.getGender());
     }
 
     @Test
     @Order(4)
-    void FindPerson_WithInvalidCORS_ReturnsInvalidCORSRequest() throws JsonProcessingException {
-        mockPerson();
+    void testDelete() {
 
-        var content = given()
-                .spec(specification)
-                .contentType(ConfigTest.CONTENT_TYPE_JSON)
-                .header(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_INVALID)
-                .pathParam("id", personDto.getId())
+        given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_XML)
+                .accept(ConfigTest.CONTENT_TYPE_XML)
+                .pathParam("id", person.getId())
                 .when()
-                .get("{id}")
+                .delete("{id}")
                 .then()
-                .statusCode(403)
+                .statusCode(204);
+    }
+
+    @Test
+    @Order(5)
+    void testFindAll() throws JsonProcessingException {
+
+        var content = given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_XML)
+                .accept(ConfigTest.CONTENT_TYPE_XML)
+                .when()
+                .get()
+                .then()
+                .statusCode(200)
                 .extract()
                 .body()
                 .asString();
 
-        assertNotNull(content);
-        assertEquals("Invalid CORS request", content);
+        List<PersonDto> people = objectMapper.readValue(content, new TypeReference<>() {});
+
+        PersonDto personOne = people.getFirst();
+
+        assertNotNull(personOne.getId());
+        assertNotNull(personOne.getFirstName());
+        assertNotNull(personOne.getLastName());
+        assertNotNull(personOne.getAddress());
+        assertNotNull(personOne.getGender());
+
+        assertEquals(1, personOne.getId());
+
+        assertEquals("Vinicius", personOne.getFirstName());
+        assertEquals("Fillos", personOne.getLastName());
+        assertEquals("Street Alfredo Kamisnki", personOne.getAddress());
+        assertEquals("Male", personOne.getGender());
+
+
+        PersonDto personTwo = people.get(3);
+
+        assertNotNull(personTwo.getId());
+        assertNotNull(personTwo.getFirstName());
+        assertNotNull(personTwo.getLastName());
+        assertNotNull(personTwo.getAddress());
+        assertNotNull(personTwo.getGender());
+
+        assertEquals(6, personTwo.getId());
+
+        assertEquals("Nelson", personTwo.getFirstName());
+        assertEquals("Mandela", personTwo.getLastName());
+        assertEquals("Mvezo - South Africa", personTwo.getAddress());
+        assertEquals("Male", personTwo.getGender());
+    }
+
+
+    @Test
+    @Order(6)
+    void testFindAllWithoutToken() {
+
+        RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
+                .setBasePath("/api/person/v1")
+                .setPort(ConfigTest.SERVER_PORT)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+                .build();
+
+        given().spec(specificationWithoutToken)
+                .contentType(ConfigTest.CONTENT_TYPE_XML)
+                .accept(ConfigTest.CONTENT_TYPE_XML)
+                .when()
+                .get()
+                .then()
+                .statusCode(403);
     }
 
     private void mockPerson() {
-        personDto.setFirstName("Richard");
-        personDto.setLastName("Stallman");
-        personDto.setAddress("New York City, New York, US");
-        personDto.setGender("Male");
+        person.setFirstName("Nelson");
+        person.setLastName("Piquet");
+        person.setAddress("Brasília - DF - Brasil");
+        person.setGender("Male");
     }
 }
