@@ -1,5 +1,6 @@
 package io.github.vinifillos.integrationTests.dto;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.*;
 
 import java.io.Serial;
@@ -10,6 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter @Setter
 @EqualsAndHashCode
+@XmlRootElement
 public class TokenDto implements Serializable {
 
     @Serial

@@ -1,5 +1,6 @@
 package io.github.vinifillos.integrationTests.dto;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.*;
 
 import java.io.Serial;
@@ -9,6 +10,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter @Setter
 @EqualsAndHashCode
+@XmlRootElement
 public class AccountCredentialsDto implements Serializable {
 
     @Serial

@@ -6,8 +6,6 @@ import io.github.vinifillos.model.dto.PersonDto;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class MockPerson {
 
 
