@@ -6,9 +6,7 @@ import io.github.vinifillos.integrationTests.dto.AccountCredentialsDto;
 import io.github.vinifillos.integrationTests.dto.PersonDto;
 import io.github.vinifillos.integrationTests.testContainers.AbstractIntegrationTest;
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import io.github.vinifillos.model.dto.security.TokenDto;
 import org.junit.jupiter.api.BeforeAll;
@@ -103,19 +101,21 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertNotNull(persistedPerson.getLastName());
         assertNotNull(persistedPerson.getAddress());
         assertNotNull(persistedPerson.getGender());
+        assertNotNull(persistedPerson.getEnabled());
 
         assertTrue(persistedPerson.getId() > 0);
 
-        assertEquals("Nelson", persistedPerson.getFirstName());
-        assertEquals("Piquet", persistedPerson.getLastName());
-        assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
+        assertEquals("Vinicius", persistedPerson.getFirstName());
+        assertEquals("Fillos", persistedPerson.getLastName());
+        assertEquals("Irati - PR - Brazil", persistedPerson.getAddress());
         assertEquals("Male", persistedPerson.getGender());
+        assertTrue(persistedPerson.getEnabled());
     }
 
     @Test
     @Order(2)
      void testUpdate() throws JsonProcessingException {
-        person.setLastName("Piquet Souto Maior");
+        person.setLastName("Fillos Souto Maior");
 
         var content = given().spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_XML)
@@ -139,17 +139,56 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertNotNull(persistedPerson.getLastName());
         assertNotNull(persistedPerson.getAddress());
         assertNotNull(persistedPerson.getGender());
+        assertNotNull(persistedPerson.getEnabled());
 
         assertEquals(person.getId(), persistedPerson.getId());
 
-        assertEquals("Nelson", persistedPerson.getFirstName());
-        assertEquals("Piquet Souto Maior", persistedPerson.getLastName());
-        assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
+        assertEquals("Vinicius", persistedPerson.getFirstName());
+        assertEquals("Fillos Souto Maior", persistedPerson.getLastName());
+        assertEquals("Irati - PR - Brazil", persistedPerson.getAddress());
         assertEquals("Male", persistedPerson.getGender());
+        assertTrue(persistedPerson.getEnabled());
     }
 
     @Test
     @Order(3)
+    void testDisableById() throws JsonProcessingException {
+        mockPerson();
+
+        var content = given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_XML)
+                .accept(ConfigTest.CONTENT_TYPE_XML)
+                .pathParam("id", person.getId())
+                .when()
+                .patch("{id}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        PersonDto persistedPerson = objectMapper.readValue(content, PersonDto.class);
+        person = persistedPerson;
+
+        assertNotNull(persistedPerson);
+
+        assertNotNull(persistedPerson.getId());
+        assertNotNull(persistedPerson.getFirstName());
+        assertNotNull(persistedPerson.getLastName());
+        assertNotNull(persistedPerson.getAddress());
+        assertNotNull(persistedPerson.getGender());
+        assertNotNull(persistedPerson.getEnabled());
+
+        assertEquals(person.getId(), persistedPerson.getId());
+
+        assertEquals("Vinicius", persistedPerson.getFirstName());
+        assertEquals("Fillos Souto Maior", persistedPerson.getLastName());
+        assertEquals("Irati - PR - Brazil", persistedPerson.getAddress());
+        assertEquals("Male", persistedPerson.getGender());
+        assertFalse(persistedPerson.getEnabled());
+    }
+    @Test
+    @Order(4)
      void testFindById() throws JsonProcessingException {
         mockPerson();
 
@@ -175,17 +214,19 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertNotNull(persistedPerson.getLastName());
         assertNotNull(persistedPerson.getAddress());
         assertNotNull(persistedPerson.getGender());
+        assertNotNull(persistedPerson.getEnabled());
 
         assertEquals(person.getId(), persistedPerson.getId());
 
-        assertEquals("Nelson", persistedPerson.getFirstName());
-        assertEquals("Piquet Souto Maior", persistedPerson.getLastName());
-        assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
+        assertEquals("Vinicius", persistedPerson.getFirstName());
+        assertEquals("Fillos Souto Maior", persistedPerson.getLastName());
+        assertEquals("Irati - PR - Brazil", persistedPerson.getAddress());
         assertEquals("Male", persistedPerson.getGender());
+        assertFalse(persistedPerson.getEnabled());
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void testDelete() {
 
         given().spec(specification)
@@ -199,7 +240,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     void testFindAll() throws JsonProcessingException {
 
         var content = given().spec(specification)
@@ -222,6 +263,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertNotNull(personOne.getLastName());
         assertNotNull(personOne.getAddress());
         assertNotNull(personOne.getGender());
+        assertNotNull(personOne.getEnabled());
 
         assertEquals(1, personOne.getId());
 
@@ -229,7 +271,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertEquals("Fillos", personOne.getLastName());
         assertEquals("Street Alfredo Kamisnki", personOne.getAddress());
         assertEquals("Male", personOne.getGender());
-
+        assertTrue(personOne.getEnabled());
 
         PersonDto personTwo = people.get(3);
 
@@ -238,6 +280,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertNotNull(personTwo.getLastName());
         assertNotNull(personTwo.getAddress());
         assertNotNull(personTwo.getGender());
+        assertNotNull(personTwo.getEnabled());
 
         assertEquals(6, personTwo.getId());
 
@@ -245,10 +288,11 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertEquals("Mandela", personTwo.getLastName());
         assertEquals("Mvezo - South Africa", personTwo.getAddress());
         assertEquals("Male", personTwo.getGender());
+        assertTrue(personTwo.getEnabled());
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void testFindAllWithoutToken() {
 
         RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
@@ -268,9 +312,10 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
     }
 
     private void mockPerson() {
-        person.setFirstName("Nelson");
-        person.setLastName("Piquet");
-        person.setAddress("Brasília - DF - Brasil");
+        person.setFirstName("Vinicius");
+        person.setLastName("Fillos");
+        person.setAddress("Irati - PR - Brazil");
         person.setGender("Male");
+        person.setEnabled(true);
     }
 }
