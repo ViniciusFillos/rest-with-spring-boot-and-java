@@ -82,22 +82,24 @@ class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        PersonDto persistedPersonDto = objectMapper.readValue(content, PersonDto.class);
-        personDto = persistedPersonDto;
+        PersonDto persistedPerson = objectMapper.readValue(content, PersonDto.class);
+        personDto = persistedPerson;
 
-        assertNotNull(persistedPersonDto);
-        assertNotNull(persistedPersonDto.getId());
-        assertNotNull(persistedPersonDto.getFirstName());
-        assertNotNull(persistedPersonDto.getLastName());
-        assertNotNull(persistedPersonDto.getGender());
-        assertNotNull(persistedPersonDto.getAddress());
+        assertNotNull(persistedPerson);
+        assertNotNull(persistedPerson.getId());
+        assertNotNull(persistedPerson.getFirstName());
+        assertNotNull(persistedPerson.getLastName());
+        assertNotNull(persistedPerson.getGender());
+        assertNotNull(persistedPerson.getAddress());
+        assertNotNull(persistedPerson.getEnabled());
 
-        assertTrue(persistedPersonDto.getId() > 0);
+        assertTrue(persistedPerson.getId() > 0);
 
-        assertEquals("Richard", persistedPersonDto.getFirstName());
-        assertEquals("Stallman", persistedPersonDto.getLastName());
-        assertEquals("Male", persistedPersonDto.getGender());
-        assertEquals("New York City, New York, US", persistedPersonDto.getAddress());
+        assertEquals("Richard", persistedPerson.getFirstName());
+        assertEquals("Stallman", persistedPerson.getLastName());
+        assertEquals("Male", persistedPerson.getGender());
+        assertEquals("New York City, New York, US", persistedPerson.getAddress());
+        assertTrue(persistedPerson.getEnabled());
     }
 
     @Test
@@ -117,22 +119,24 @@ class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        PersonDto persistedPersonDto = objectMapper.readValue(content, PersonDto.class);
-        personDto = persistedPersonDto;
+        PersonDto persistedPerson = objectMapper.readValue(content, PersonDto.class);
+        personDto = persistedPerson;
 
-        assertNotNull(persistedPersonDto);
-        assertNotNull(persistedPersonDto.getId());
-        assertNotNull(persistedPersonDto.getFirstName());
-        assertNotNull(persistedPersonDto.getLastName());
-        assertNotNull(persistedPersonDto.getGender());
-        assertNotNull(persistedPersonDto.getAddress());
+        assertNotNull(persistedPerson);
+        assertNotNull(persistedPerson.getId());
+        assertNotNull(persistedPerson.getFirstName());
+        assertNotNull(persistedPerson.getLastName());
+        assertNotNull(persistedPerson.getGender());
+        assertNotNull(persistedPerson.getAddress());
+        assertNotNull(persistedPerson.getEnabled());
 
-        assertEquals(personDto.getId(), persistedPersonDto.getId());
+        assertEquals(personDto.getId(), persistedPerson.getId());
 
-        assertEquals("Richard", persistedPersonDto.getFirstName());
-        assertEquals("Modified Last Name", persistedPersonDto.getLastName());
-        assertEquals("Male", persistedPersonDto.getGender());
-        assertEquals("New York City, New York, US", persistedPersonDto.getAddress());
+        assertEquals("Richard", persistedPerson.getFirstName());
+        assertEquals("Modified Last Name", persistedPerson.getLastName());
+        assertEquals("Male", persistedPerson.getGender());
+        assertEquals("New York City, New York, US", persistedPerson.getAddress());
+        assertTrue(persistedPerson.getEnabled());
     }
 
     @Test
@@ -153,22 +157,24 @@ class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        PersonDto persistedPersonDto = objectMapper.readValue(content, PersonDto.class);
-        personDto = persistedPersonDto;
+        PersonDto persistedPerson = objectMapper.readValue(content, PersonDto.class);
+        personDto = persistedPerson;
 
-        assertNotNull(persistedPersonDto);
-        assertNotNull(persistedPersonDto.getId());
-        assertNotNull(persistedPersonDto.getFirstName());
-        assertNotNull(persistedPersonDto.getLastName());
-        assertNotNull(persistedPersonDto.getGender());
-        assertNotNull(persistedPersonDto.getAddress());
+        assertNotNull(persistedPerson);
+        assertNotNull(persistedPerson.getId());
+        assertNotNull(persistedPerson.getFirstName());
+        assertNotNull(persistedPerson.getLastName());
+        assertNotNull(persistedPerson.getGender());
+        assertNotNull(persistedPerson.getAddress());
+        assertNotNull(persistedPerson.getEnabled());
 
-        assertTrue(persistedPersonDto.getId() > 0);
+        assertTrue(persistedPerson.getId() > 0);
 
-        assertEquals("Richard", persistedPersonDto.getFirstName());
-        assertEquals("Modified Last Name", persistedPersonDto.getLastName());
-        assertEquals("Male", persistedPersonDto.getGender());
-        assertEquals("New York City, New York, US", persistedPersonDto.getAddress());
+        assertEquals("Richard", persistedPerson.getFirstName());
+        assertEquals("Modified Last Name", persistedPerson.getLastName());
+        assertEquals("Male", persistedPerson.getGender());
+        assertEquals("New York City, New York, US", persistedPerson.getAddress());
+        assertTrue(persistedPerson.getEnabled());
     }
 
     @Test
@@ -207,6 +213,7 @@ class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
         assertNotNull(personOne.getLastName());
         assertNotNull(personOne.getAddress());
         assertNotNull(personOne.getGender());
+        assertNotNull(personOne.getEnabled());
 
         assertEquals(1, personOne.getId());
 
@@ -214,6 +221,7 @@ class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
         assertEquals("Fillos", personOne.getLastName());
         assertEquals("Street Alfredo Kamisnki", personOne.getAddress());
         assertEquals("Male", personOne.getGender());
+        assertTrue(personOne.getEnabled());
 
         PersonDto personTwo = people.get(1);
 
@@ -222,6 +230,7 @@ class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
         assertNotNull(personTwo.getLastName());
         assertNotNull(personTwo.getAddress());
         assertNotNull(personTwo.getGender());
+        assertNotNull(personTwo.getEnabled());
 
         assertEquals(2, personTwo.getId());
 
@@ -229,6 +238,7 @@ class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
         assertEquals("Canesso", personTwo.getLastName());
         assertEquals("Street street", personTwo.getAddress());
         assertEquals("Female", personTwo.getGender());
+        assertTrue(personTwo.getEnabled());
     }
 
     @Test
@@ -256,5 +266,6 @@ class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
         personDto.setLastName("Stallman");
         personDto.setAddress("New York City, New York, US");
         personDto.setGender("Male");
+        personDto.setEnabled(true);
     }
 }
