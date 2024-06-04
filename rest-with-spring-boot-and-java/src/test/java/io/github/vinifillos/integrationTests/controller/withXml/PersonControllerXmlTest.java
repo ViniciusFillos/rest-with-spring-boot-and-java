@@ -37,14 +37,12 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
 
     private static RequestSpecification specification;
     private static XmlMapper objectMapper;
-
     private static PersonDto person;
 
     @BeforeAll
     public static void setup() {
         objectMapper = new XmlMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
         person = new PersonDto();
     }
 
@@ -248,7 +246,6 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertEquals("Mvezo - South Africa", personTwo.getAddress());
         assertEquals("Male", personTwo.getGender());
     }
-
 
     @Test
     @Order(6)

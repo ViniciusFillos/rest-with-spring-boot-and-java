@@ -8,19 +8,21 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 @XmlRootElement
 @NoArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @EqualsAndHashCode
-public class PersonDto implements Serializable {
+public class BookDto implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String gender;
+    private String author;
+    private Date launchDate;
+    private Double price;
+    private String title;
 }
