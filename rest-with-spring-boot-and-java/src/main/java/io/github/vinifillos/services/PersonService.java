@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -63,6 +64,17 @@ public class PersonService {
 
         var dto = PersonMapper.fromPersonToDto(personRepository.save(entity));
         dto.add(linkTo(methodOn(PersonController.class ).findById(dto.getKey())).withSelfRel());
+        return dto;
+    }
+
+    @Transactional
+    public PersonDto disablePerson(Long id) {
+        logger.info("Disabling one person!");
+        personRepository.disablePerson(id);
+        var entity = personRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+        var dto = PersonMapper.fromPersonToDto(entity);
+        dto.add(linkTo(methodOn(PersonController.class ).findById(id)).withSelfRel());
         return dto;
     }
 

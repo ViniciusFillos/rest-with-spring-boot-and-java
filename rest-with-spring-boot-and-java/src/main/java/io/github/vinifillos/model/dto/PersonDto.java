@@ -2,6 +2,7 @@ package io.github.vinifillos.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ public class PersonDto extends RepresentationModel<PersonDto> implements Seriali
     private String lastName;
     private String address;
     private String gender;
+    private Boolean enabled;
 
     @Override
     public boolean equals(Object o) {
@@ -33,7 +35,7 @@ public class PersonDto extends RepresentationModel<PersonDto> implements Seriali
         if (!super.equals(o)) return false;
 
         PersonDto personDto = (PersonDto) o;
-        return Objects.equals(key, personDto.key) && Objects.equals(firstName, personDto.firstName) && Objects.equals(lastName, personDto.lastName) && Objects.equals(address, personDto.address) && Objects.equals(gender, personDto.gender);
+        return Objects.equals(key, personDto.key) && Objects.equals(firstName, personDto.firstName) && Objects.equals(lastName, personDto.lastName) && Objects.equals(address, personDto.address) && Objects.equals(gender, personDto.gender) && Objects.equals(enabled, personDto.enabled);
     }
 
     @Override
@@ -44,6 +46,7 @@ public class PersonDto extends RepresentationModel<PersonDto> implements Seriali
         result = 31 * result + Objects.hashCode(lastName);
         result = 31 * result + Objects.hashCode(address);
         result = 31 * result + Objects.hashCode(gender);
+        result = 31 * result + Objects.hashCode(enabled);
         return result;
     }
 }

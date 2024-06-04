@@ -7,8 +7,10 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
-@Setter @Getter
+@Setter
+@Getter
 @Entity
 @NoArgsConstructor
 @Table(name = "person")
@@ -28,6 +30,8 @@ public class Person implements Serializable {
     private String address;
     @Column(name = "gender", nullable = false, length = 10)
     private String gender;
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled;
 
     @Override
     public boolean equals(Object o) {
@@ -35,11 +39,17 @@ public class Person implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
 
         Person person = (Person) o;
-        return id.equals(person.id);
+        return Objects.equals(id, person.id) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(address, person.address) && Objects.equals(gender, person.gender) && Objects.equals(enabled, person.enabled);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(firstName);
+        result = 31 * result + Objects.hashCode(lastName);
+        result = 31 * result + Objects.hashCode(address);
+        result = 31 * result + Objects.hashCode(gender);
+        result = 31 * result + Objects.hashCode(enabled);
+        return result;
     }
 }
