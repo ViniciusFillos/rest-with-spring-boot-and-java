@@ -1,4 +1,4 @@
-package io.github.vinifillos.integrationTests.controller.withJson;
+package io.github.vinifillos.integrationTests.controller.cors.withJson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,7 +9,6 @@ import io.github.vinifillos.integrationTests.dto.AccountCredentialsDto;
 import io.github.vinifillos.integrationTests.dto.PersonDto;
 import io.github.vinifillos.integrationTests.dto.TokenDto;
 import io.github.vinifillos.integrationTests.testContainers.AbstractIntegrationTest;
-
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -25,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PersonControllerJsonTest extends AbstractIntegrationTest {
+class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
 
     private static RequestSpecification specification;
     private static ObjectMapper objectMapper;
@@ -41,10 +40,8 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(0)
-    void authorization() {
-
+    void CreateAccessToken() {
         AccountCredentialsDto user = new AccountCredentialsDto("leandro", "admin123");
-
         var accessToken = given()
                 .basePath("/auth/signin")
                 .port(ConfigTest.SERVER_PORT)
@@ -70,10 +67,11 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(1)
-    void testCreate() throws JsonProcessingException {
+    void CreatePerson_WithValidCORS_ReturnsPerson() throws JsonProcessingException {
         mockPerson();
 
-        var content = given().spec(specification)
+        var content = given()
+                .spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_JSON)
                 .body(personDto)
                 .when()
@@ -84,31 +82,31 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        PersonDto persistedPerson = objectMapper.readValue(content, PersonDto.class);
-        personDto = persistedPerson;
+        PersonDto persistedPersonDto = objectMapper.readValue(content, PersonDto.class);
+        personDto = persistedPersonDto;
 
-        assertNotNull(persistedPerson);
+        assertNotNull(persistedPersonDto);
+        assertNotNull(persistedPersonDto.getId());
+        assertNotNull(persistedPersonDto.getFirstName());
+        assertNotNull(persistedPersonDto.getLastName());
+        assertNotNull(persistedPersonDto.getGender());
+        assertNotNull(persistedPersonDto.getAddress());
 
-        assertNotNull(persistedPerson.getId());
-        assertNotNull(persistedPerson.getFirstName());
-        assertNotNull(persistedPerson.getLastName());
-        assertNotNull(persistedPerson.getAddress());
-        assertNotNull(persistedPerson.getGender());
+        assertTrue(persistedPersonDto.getId() > 0);
 
-        assertTrue(persistedPerson.getId() > 0);
-
-        assertEquals("Nelson", persistedPerson.getFirstName());
-        assertEquals("Piquet", persistedPerson.getLastName());
-        assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
-        assertEquals("Male", persistedPerson.getGender());
+        assertEquals("Richard", persistedPersonDto.getFirstName());
+        assertEquals("Stallman", persistedPersonDto.getLastName());
+        assertEquals("Male", persistedPersonDto.getGender());
+        assertEquals("New York City, New York, US", persistedPersonDto.getAddress());
     }
 
     @Test
     @Order(2)
-    void testUpdate() throws JsonProcessingException {
-        personDto.setLastName("Piquet Souto Maior");
+    void UpdatePerson_WithValidCORS_ReturnsPerson() throws JsonProcessingException {
+        personDto.setLastName("Modified Last Name");
 
-        var content = given().spec(specification)
+        var content = given()
+                .spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_JSON)
                 .body(personDto)
                 .when()
@@ -119,32 +117,33 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        PersonDto persistedPerson = objectMapper.readValue(content, PersonDto.class);
-        personDto = persistedPerson;
+        PersonDto persistedPersonDto = objectMapper.readValue(content, PersonDto.class);
+        personDto = persistedPersonDto;
 
-        assertNotNull(persistedPerson);
+        assertNotNull(persistedPersonDto);
+        assertNotNull(persistedPersonDto.getId());
+        assertNotNull(persistedPersonDto.getFirstName());
+        assertNotNull(persistedPersonDto.getLastName());
+        assertNotNull(persistedPersonDto.getGender());
+        assertNotNull(persistedPersonDto.getAddress());
 
-        assertNotNull(persistedPerson.getId());
-        assertNotNull(persistedPerson.getFirstName());
-        assertNotNull(persistedPerson.getLastName());
-        assertNotNull(persistedPerson.getAddress());
-        assertNotNull(persistedPerson.getGender());
+        assertEquals(personDto.getId(), persistedPersonDto.getId());
 
-        assertEquals(personDto.getId(), persistedPerson.getId());
-
-        assertEquals("Nelson", persistedPerson.getFirstName());
-        assertEquals("Piquet Souto Maior", persistedPerson.getLastName());
-        assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
-        assertEquals("Male", persistedPerson.getGender());
+        assertEquals("Richard", persistedPersonDto.getFirstName());
+        assertEquals("Modified Last Name", persistedPersonDto.getLastName());
+        assertEquals("Male", persistedPersonDto.getGender());
+        assertEquals("New York City, New York, US", persistedPersonDto.getAddress());
     }
 
     @Test
     @Order(3)
-    void testFindById() throws JsonProcessingException {
+    void FindPerson_WithValidCORS_ReturnsPerson() throws JsonProcessingException {
         mockPerson();
 
-        var content = given().spec(specification)
+        var content = given()
+                .spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .header(ConfigTest.HEADER_PARAM_ORIGIN, ConfigTest.ORIGIN_VINIFILLOS)
                 .pathParam("id", personDto.getId())
                 .when()
                 .get("{id}")
@@ -154,30 +153,29 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        PersonDto persistedPerson = objectMapper.readValue(content, PersonDto.class);
-        personDto = persistedPerson;
+        PersonDto persistedPersonDto = objectMapper.readValue(content, PersonDto.class);
+        personDto = persistedPersonDto;
 
-        assertNotNull(persistedPerson);
+        assertNotNull(persistedPersonDto);
+        assertNotNull(persistedPersonDto.getId());
+        assertNotNull(persistedPersonDto.getFirstName());
+        assertNotNull(persistedPersonDto.getLastName());
+        assertNotNull(persistedPersonDto.getGender());
+        assertNotNull(persistedPersonDto.getAddress());
 
-        assertNotNull(persistedPerson.getId());
-        assertNotNull(persistedPerson.getFirstName());
-        assertNotNull(persistedPerson.getLastName());
-        assertNotNull(persistedPerson.getAddress());
-        assertNotNull(persistedPerson.getGender());
+        assertTrue(persistedPersonDto.getId() > 0);
 
-        assertEquals(personDto.getId(), persistedPerson.getId());
-
-        assertEquals("Nelson", persistedPerson.getFirstName());
-        assertEquals("Piquet Souto Maior", persistedPerson.getLastName());
-        assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
-        assertEquals("Male", persistedPerson.getGender());
+        assertEquals("Richard", persistedPersonDto.getFirstName());
+        assertEquals("Modified Last Name", persistedPersonDto.getLastName());
+        assertEquals("Male", persistedPersonDto.getGender());
+        assertEquals("New York City, New York, US", persistedPersonDto.getAddress());
     }
 
     @Test
     @Order(4)
-    void testDelete() {
-
-        given().spec(specification)
+    void DeletePerson_WithValidCORS_ReturnsNothing() {
+        given()
+                .spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_JSON)
                 .pathParam("id", personDto.getId())
                 .when()
@@ -188,7 +186,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(5)
-    void testFindAll() throws JsonProcessingException {
+    void testFindAll_WithValidToken_ReturnsList() throws JsonProcessingException {
 
         var content = given().spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_JSON)
@@ -200,25 +198,24 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        List<PersonDto> people = objectMapper.readValue(content, new TypeReference<>() {
-        });
+        List<PersonDto> people = objectMapper.readValue(content, new TypeReference<>() {});
 
-        PersonDto foundPersonOne = people.getFirst();
+        PersonDto personOne = people.getFirst();
 
-        assertNotNull(foundPersonOne.getId());
-        assertNotNull(foundPersonOne.getFirstName());
-        assertNotNull(foundPersonOne.getLastName());
-        assertNotNull(foundPersonOne.getAddress());
-        assertNotNull(foundPersonOne.getGender());
+        assertNotNull(personOne.getId());
+        assertNotNull(personOne.getFirstName());
+        assertNotNull(personOne.getLastName());
+        assertNotNull(personOne.getAddress());
+        assertNotNull(personOne.getGender());
 
-        assertEquals(1, foundPersonOne.getId());
+        assertEquals(1, personOne.getId());
 
-        assertEquals("Vinicius", foundPersonOne.getFirstName());
-        assertEquals("Fillos", foundPersonOne.getLastName());
-        assertEquals("Street Alfredo Kamisnki", foundPersonOne.getAddress());
-        assertEquals("Male", foundPersonOne.getGender());
+        assertEquals("Vinicius", personOne.getFirstName());
+        assertEquals("Fillos", personOne.getLastName());
+        assertEquals("Street Alfredo Kamisnki", personOne.getAddress());
+        assertEquals("Male", personOne.getGender());
 
-        PersonDto personTwo = people.get(3);
+        PersonDto personTwo = people.get(1);
 
         assertNotNull(personTwo.getId());
         assertNotNull(personTwo.getFirstName());
@@ -226,18 +223,17 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertNotNull(personTwo.getAddress());
         assertNotNull(personTwo.getGender());
 
-        assertEquals(6, personTwo.getId());
+        assertEquals(2, personTwo.getId());
 
-        assertEquals("Nelson", personTwo.getFirstName());
-        assertEquals("Mandela", personTwo.getLastName());
-        assertEquals("Mvezo - South Africa", personTwo.getAddress());
-        assertEquals("Male", personTwo.getGender());
+        assertEquals("Pietra", personTwo.getFirstName());
+        assertEquals("Canesso", personTwo.getLastName());
+        assertEquals("Street street", personTwo.getAddress());
+        assertEquals("Female", personTwo.getGender());
     }
-
 
     @Test
     @Order(6)
-    void testFindAllWithoutToken() {
+    void testFindAll_WithoutToken_ReturnsException() {
 
         RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
                 .setBasePath("/api/person/v1")
@@ -254,10 +250,11 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
                 .statusCode(403);
     }
 
+
     private void mockPerson() {
-        personDto.setFirstName("Nelson");
-        personDto.setLastName("Piquet");
-        personDto.setAddress("Brasília - DF - Brasil");
+        personDto.setFirstName("Richard");
+        personDto.setLastName("Stallman");
+        personDto.setAddress("New York City, New York, US");
         personDto.setGender("Male");
     }
 }
