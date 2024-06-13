@@ -8,6 +8,7 @@ import io.github.vinifillos.model.dto.PersonDto;
 import io.github.vinifillos.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -33,7 +34,7 @@ public class PersonService {
 
         var personPage = personRepository.findAll(pageable);
         var personDtosPage = personPage.map(PersonMapper::fromPersonToDto);
-        personDtosPage.map(p -> p.add(linkTo(methodOn(PersonController.class ).findById(p.getKey())).withSelfRel()));
+        personDtosPage.map(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
         Link link = linkTo(methodOn(PersonController.class).findAll(pageable.getPageNumber(), pageable.getPageSize(), "asc")).withSelfRel();
         return assembler.toModel(personDtosPage, link);
     }
@@ -44,21 +45,21 @@ public class PersonService {
         var entity = personRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
         var dto = PersonMapper.fromPersonToDto(entity);
-        dto.add(linkTo(methodOn(PersonController.class ).findById(id)).withSelfRel());
+        dto.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
         return dto;
     }
 
     public PersonDto create(PersonDto person) {
-        if(person == null) throw new RequiredObjectIsNullException();
+        if (person == null) throw new RequiredObjectIsNullException();
         logger.info("Creating one person!");
         var entity = PersonMapper.fromDtoToPerson(person);
         var dto = PersonMapper.fromPersonToDto(personRepository.save(entity));
-        dto.add(linkTo(methodOn(PersonController.class ).findById(dto.getKey())).withSelfRel());
+        dto.add(linkTo(methodOn(PersonController.class).findById(dto.getKey())).withSelfRel());
         return dto;
     }
 
     public PersonDto update(PersonDto person) {
-        if(person == null) throw new RequiredObjectIsNullException();
+        if (person == null) throw new RequiredObjectIsNullException();
         logger.info("Updating one person!");
         var entity = personRepository.findById(person.getKey())
                 .orElseThrow(ResourceNotFoundException::new);
@@ -69,7 +70,7 @@ public class PersonService {
         entity.setLastName(person.getLastName());
 
         var dto = PersonMapper.fromPersonToDto(personRepository.save(entity));
-        dto.add(linkTo(methodOn(PersonController.class ).findById(dto.getKey())).withSelfRel());
+        dto.add(linkTo(methodOn(PersonController.class).findById(dto.getKey())).withSelfRel());
         return dto;
     }
 
@@ -80,7 +81,7 @@ public class PersonService {
         var entity = personRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
         var dto = PersonMapper.fromPersonToDto(entity);
-        dto.add(linkTo(methodOn(PersonController.class ).findById(id)).withSelfRel());
+        dto.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
         return dto;
     }
 
