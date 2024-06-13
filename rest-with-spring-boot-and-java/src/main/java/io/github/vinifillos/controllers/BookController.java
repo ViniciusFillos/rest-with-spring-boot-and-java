@@ -93,7 +93,7 @@ public class BookController {
             @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
     })
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
         bookService.delete(id);
         return ResponseEntity.noContent().build();
     }
