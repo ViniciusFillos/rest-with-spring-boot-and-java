@@ -1,7 +1,6 @@
 package io.github.vinifillos.integrationTests.controller.withJson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.vinifillos.configs.ConfigTest;
@@ -18,8 +17,6 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -279,7 +276,6 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertTrue(personTwo.getEnabled());
     }
 
-
     @Test
     @Order(7)
     void testFindAllWithoutToken() {
@@ -304,6 +300,41 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         personDto.setAddress("Irati - PR - Brazil");
         personDto.setGender("Male");
         personDto.setEnabled(true);
+    }
 
+    @Test
+    @Order(8)
+    void testFindByName() throws JsonProcessingException {
+        var content = given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .pathParam("firstName", "vini")
+                .queryParams("page", 0, "size", 3, "direction", "asc")
+                .when()
+                .get("/findPeopleByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        WrapperPersonDto wrapper = objectMapper.readValue(content, WrapperPersonDto.class);
+        var people = wrapper.getEmbedded().getPeople();
+
+        PersonDto Person = people.getFirst();
+
+        assertNotNull(Person.getId());
+        assertNotNull(Person.getFirstName());
+        assertNotNull(Person.getLastName());
+        assertNotNull(Person.getAddress());
+        assertNotNull(Person.getGender());
+        assertNotNull(Person.getEnabled());
+
+        assertEquals(1, Person.getId());
+
+        assertEquals("Vinicius", Person.getFirstName());
+        assertEquals("Fillos", Person.getLastName());
+        assertEquals("Street Alfredo Kamisnki", Person.getAddress());
+        assertEquals("Male", Person.getGender());
+        assertTrue(Person.getEnabled());
     }
 }

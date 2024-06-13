@@ -322,4 +322,42 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         person.setGender("Male");
         person.setEnabled(true);
     }
+
+    @Test
+    @Order(8)
+    void testFindByName() throws JsonProcessingException {
+
+        var content = given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_XML)
+                .accept(ConfigTest.CONTENT_TYPE_XML)
+                .pathParam("firstName", "vini")
+                .queryParams("page", 0, "size", 3, "direction", "asc")
+                .when()
+                .get("/findPeopleByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+        var people = wrapper.getContent();
+
+        PersonDto Person = people.getFirst();
+
+        assertNotNull(Person.getId());
+        assertNotNull(Person.getFirstName());
+        assertNotNull(Person.getLastName());
+        assertNotNull(Person.getAddress());
+        assertNotNull(Person.getGender());
+        assertNotNull(Person.getEnabled());
+
+        assertEquals(1, Person.getId());
+
+        assertEquals("Vinicius", Person.getFirstName());
+        assertEquals("Fillos", Person.getLastName());
+        assertEquals("Street Alfredo Kamisnki", Person.getAddress());
+        assertEquals("Male", Person.getGender());
+        assertTrue(Person.getEnabled());
+    }
 }

@@ -327,6 +327,45 @@ public class PersonControllerYamlTest extends AbstractIntegrationTest {
                 .statusCode(403);
     }
 
+    @Test
+    @Order(8)
+    void testFindByName() {
+        var wrapper = given().spec(specification)
+                .config(RestAssuredConfig.config()
+                        .encoderConfig(EncoderConfig.encoderConfig()
+                                .encodeContentTypeAs(ConfigTest.CONTENT_TYPE_YML, ContentType.TEXT)))
+                .contentType(ConfigTest.CONTENT_TYPE_YML)
+                .accept(ConfigTest.CONTENT_TYPE_YML)
+                .pathParam("firstName", "vini")
+                .queryParams("page", 0, "size", 3, "direction", "asc")
+                .when()
+                .get("/findPeopleByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(PagedModelPerson.class, objectMapper);
+
+        var people = wrapper.getContent();
+
+        PersonDto Person = people.getFirst();
+
+        assertNotNull(Person.getId());
+        assertNotNull(Person.getFirstName());
+        assertNotNull(Person.getLastName());
+        assertNotNull(Person.getAddress());
+        assertNotNull(Person.getGender());
+        assertNotNull(Person.getEnabled());
+
+        assertEquals(1, Person.getId());
+
+        assertEquals("Vinicius", Person.getFirstName());
+        assertEquals("Fillos", Person.getLastName());
+        assertEquals("Street Alfredo Kamisnki", Person.getAddress());
+        assertEquals("Male", Person.getGender());
+        assertTrue(Person.getEnabled());
+    }
+
     private void mockPerson() {
         person.setFirstName("Vinicius");
         person.setLastName("Fillos");
