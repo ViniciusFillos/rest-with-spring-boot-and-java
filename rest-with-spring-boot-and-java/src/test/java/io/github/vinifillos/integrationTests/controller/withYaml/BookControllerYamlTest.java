@@ -5,6 +5,7 @@ import io.github.vinifillos.integrationTests.controller.withYaml.mapper.YMLMappe
 import io.github.vinifillos.integrationTests.dto.AccountCredentialsDto;
 import io.github.vinifillos.integrationTests.dto.BookDto;
 import io.github.vinifillos.integrationTests.dto.TokenDto;
+import io.github.vinifillos.integrationTests.dto.pagedModels.PagedModelBook;
 import io.github.vinifillos.integrationTests.testContainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
@@ -228,25 +229,22 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
     @Test
     @Order(5)
     void testFindAll() {
-        var content = given().spec(specification)
-                .config(
-                        RestAssuredConfig
-                                .config()
+        var wrapper = given().spec(specification)
+                .config( RestAssuredConfig.config()
                                 .encoderConfig(EncoderConfig.encoderConfig()
-                                        .encodeContentTypeAs(
-                                                ConfigTest.CONTENT_TYPE_YML,
-                                                ContentType.TEXT)))
+                                        .encodeContentTypeAs(ConfigTest.CONTENT_TYPE_YML, ContentType.TEXT)))
                 .contentType(ConfigTest.CONTENT_TYPE_YML)
                 .accept(ConfigTest.CONTENT_TYPE_YML)
+                .queryParams("page", 0, "size", 7, "direction", "asc")
                 .when()
                 .get()
                 .then()
                 .statusCode(200)
                 .extract()
                 .body()
-                .as(BookDto[].class, objectMapper);
+                .as(PagedModelBook.class, objectMapper);
 
-        List<BookDto> books = Arrays.asList(content);
+        var books = wrapper.getContent();
 
         BookDto bookOne = books.getFirst();
 
@@ -257,13 +255,13 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
         assertNotNull(bookOne.getPrice());
         assertNotNull(bookOne.getLaunchDate());
 
-        assertEquals(1, bookOne.getId());
+        assertEquals(12, bookOne.getId());
 
-        assertEquals("Working effectively with legacy code", bookOne.getTitle());
-        assertEquals("Michael C. Feathers", bookOne.getAuthor());
-        assertEquals(49.0D, bookOne.getPrice());
+        assertEquals("Big Data: como extrair volume, variedade, velocidade e valor da avalanche de informação cotidiana", bookOne.getTitle());
+        assertEquals("Viktor Mayer-Schonberger e Kenneth Kukier", bookOne.getAuthor());
+        assertEquals(54.0D, bookOne.getPrice());
 
-        BookDto bookNine = books.get(8);
+        BookDto bookNine = books.get(4);
 
         assertNotNull(bookNine);
         assertNotNull(bookNine.getId());
@@ -272,11 +270,11 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
         assertNotNull(bookNine.getPrice());
         assertNotNull(bookNine.getLaunchDate());
 
-        assertEquals(9, bookNine.getId());
+        assertEquals(8, bookNine.getId());
 
-        assertEquals("Java Concurrency in Practice", bookNine.getTitle());
-        assertEquals("Brian Goetz e Tim Peierls", bookNine.getAuthor());
-        assertEquals(80.0D, bookNine.getPrice());
+        assertEquals("Domain Driven Design", bookNine.getTitle());
+        assertEquals("Eric Evans", bookNine.getAuthor());
+        assertEquals(92.0D, bookNine.getPrice());
     }
 
     @Test

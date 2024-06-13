@@ -1,20 +1,14 @@
 package io.github.vinifillos.integrationTests.dto;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 @XmlRootElement
-@NoArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class BookDto implements Serializable {
 
     @Serial

@@ -8,8 +8,7 @@ import java.io.Serializable;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
-@EqualsAndHashCode
+@Data
 @XmlRootElement
 public class AccountCredentialsDto implements Serializable {
 

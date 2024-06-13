@@ -5,6 +5,8 @@ import io.github.vinifillos.integrationTests.controller.withYaml.mapper.YMLMappe
 import io.github.vinifillos.integrationTests.dto.AccountCredentialsDto;
 import io.github.vinifillos.integrationTests.dto.PersonDto;
 import io.github.vinifillos.integrationTests.dto.TokenDto;
+import io.github.vinifillos.integrationTests.dto.pagedModels.PagedModelPerson;
+import io.github.vinifillos.integrationTests.dto.wrappers.WrapperPersonDto;
 import io.github.vinifillos.integrationTests.testContainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -251,51 +253,56 @@ public class PersonControllerYamlTest extends AbstractIntegrationTest {
     @Test
     @Order(6)
     void testFindAll() {
-        var content = given().spec(specification)
+        var wrapper = given().spec(specification)
                 .config(RestAssuredConfig.config()
                         .encoderConfig(EncoderConfig.encoderConfig()
                                 .encodeContentTypeAs(ConfigTest.CONTENT_TYPE_YML, ContentType.TEXT)))
                 .contentType(ConfigTest.CONTENT_TYPE_YML)
                 .accept(ConfigTest.CONTENT_TYPE_YML)
+                .queryParams("page", 0, "size", 3, "direction", "asc")
                 .when()
                 .get()
                 .then()
                 .statusCode(200)
                 .extract()
                 .body()
-                .as(PersonDto[].class, objectMapper);
+                .as(PagedModelPerson.class, objectMapper);
 
-        List<PersonDto> people = Arrays.asList(content);
+        var people = wrapper.getContent();
 
-        PersonDto foundPersonOne = people.getFirst();
+        PersonDto PersonOne = people.getFirst();
 
-        assertNotNull(foundPersonOne.getId());
-        assertNotNull(foundPersonOne.getFirstName());
-        assertNotNull(foundPersonOne.getLastName());
-        assertNotNull(foundPersonOne.getAddress());
-        assertNotNull(foundPersonOne.getGender());
+        assertNotNull(PersonOne.getId());
+        assertNotNull(PersonOne.getFirstName());
+        assertNotNull(PersonOne.getLastName());
+        assertNotNull(PersonOne.getAddress());
+        assertNotNull(PersonOne.getGender());
+        assertNotNull(PersonOne.getEnabled());
 
-        assertEquals(1, foundPersonOne.getId());
+        assertEquals(648, PersonOne.getId());
 
-        assertEquals("Vinicius", foundPersonOne.getFirstName());
-        assertEquals("Fillos", foundPersonOne.getLastName());
-        assertEquals("Street Alfredo Kamisnki", foundPersonOne.getAddress());
-        assertEquals("Male", foundPersonOne.getGender());
+        assertEquals("Abbot", PersonOne.getFirstName());
+        assertEquals("Thorndale", PersonOne.getLastName());
+        assertEquals("920 Mallory Alley", PersonOne.getAddress());
+        assertEquals("Male", PersonOne.getGender());
+        assertFalse(PersonOne.getEnabled());
 
-        PersonDto personTwo = people.get(3);
+        PersonDto personTwo = people.get(2);
 
         assertNotNull(personTwo.getId());
         assertNotNull(personTwo.getFirstName());
         assertNotNull(personTwo.getLastName());
         assertNotNull(personTwo.getAddress());
         assertNotNull(personTwo.getGender());
+        assertNotNull(personTwo.getEnabled());
 
-        assertEquals(6, personTwo.getId());
+        assertEquals(321, personTwo.getId());
 
-        assertEquals("Nelson", personTwo.getFirstName());
-        assertEquals("Mandela", personTwo.getLastName());
-        assertEquals("Mvezo - South Africa", personTwo.getAddress());
-        assertEquals("Male", personTwo.getGender());
+        assertEquals("Abigale", personTwo.getFirstName());
+        assertEquals("Wilber", personTwo.getLastName());
+        assertEquals("4203 Dayton Trail", personTwo.getAddress());
+        assertEquals("Female", personTwo.getGender());
+        assertTrue(personTwo.getEnabled());
     }
 
     @Test

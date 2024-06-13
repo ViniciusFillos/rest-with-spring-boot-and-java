@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.vinifillos.configs.ConfigTest;
 import io.github.vinifillos.integrationTests.dto.AccountCredentialsDto;
 import io.github.vinifillos.integrationTests.dto.PersonDto;
+import io.github.vinifillos.integrationTests.dto.pagedModels.PagedModelPerson;
+import io.github.vinifillos.integrationTests.dto.wrappers.WrapperPersonDto;
 import io.github.vinifillos.integrationTests.testContainers.AbstractIntegrationTest;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -246,6 +248,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         var content = given().spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_XML)
                 .accept(ConfigTest.CONTENT_TYPE_XML)
+                .queryParams("page", 0, "size", 3, "direction", "asc")
                 .when()
                 .get()
                 .then()
@@ -254,26 +257,27 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        List<PersonDto> people = objectMapper.readValue(content, new TypeReference<>() {});
+        PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+        var people = wrapper.getContent();
 
-        PersonDto personOne = people.getFirst();
+        PersonDto PersonOne = people.getFirst();
 
-        assertNotNull(personOne.getId());
-        assertNotNull(personOne.getFirstName());
-        assertNotNull(personOne.getLastName());
-        assertNotNull(personOne.getAddress());
-        assertNotNull(personOne.getGender());
-        assertNotNull(personOne.getEnabled());
+        assertNotNull(PersonOne.getId());
+        assertNotNull(PersonOne.getFirstName());
+        assertNotNull(PersonOne.getLastName());
+        assertNotNull(PersonOne.getAddress());
+        assertNotNull(PersonOne.getGender());
+        assertNotNull(PersonOne.getEnabled());
 
-        assertEquals(1, personOne.getId());
+        assertEquals(648, PersonOne.getId());
 
-        assertEquals("Vinicius", personOne.getFirstName());
-        assertEquals("Fillos", personOne.getLastName());
-        assertEquals("Street Alfredo Kamisnki", personOne.getAddress());
-        assertEquals("Male", personOne.getGender());
-        assertTrue(personOne.getEnabled());
+        assertEquals("Abbot", PersonOne.getFirstName());
+        assertEquals("Thorndale", PersonOne.getLastName());
+        assertEquals("920 Mallory Alley", PersonOne.getAddress());
+        assertEquals("Male", PersonOne.getGender());
+        assertFalse(PersonOne.getEnabled());
 
-        PersonDto personTwo = people.get(3);
+        PersonDto personTwo = people.get(2);
 
         assertNotNull(personTwo.getId());
         assertNotNull(personTwo.getFirstName());
@@ -282,12 +286,12 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertNotNull(personTwo.getGender());
         assertNotNull(personTwo.getEnabled());
 
-        assertEquals(6, personTwo.getId());
+        assertEquals(321, personTwo.getId());
 
-        assertEquals("Nelson", personTwo.getFirstName());
-        assertEquals("Mandela", personTwo.getLastName());
-        assertEquals("Mvezo - South Africa", personTwo.getAddress());
-        assertEquals("Male", personTwo.getGender());
+        assertEquals("Abigale", personTwo.getFirstName());
+        assertEquals("Wilber", personTwo.getLastName());
+        assertEquals("4203 Dayton Trail", personTwo.getAddress());
+        assertEquals("Female", personTwo.getGender());
         assertTrue(personTwo.getEnabled());
     }
 

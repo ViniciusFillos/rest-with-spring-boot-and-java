@@ -8,6 +8,7 @@ import io.github.vinifillos.configs.ConfigTest;
 import io.github.vinifillos.integrationTests.dto.AccountCredentialsDto;
 import io.github.vinifillos.integrationTests.dto.BookDto;
 import io.github.vinifillos.integrationTests.dto.TokenDto;
+import io.github.vinifillos.integrationTests.dto.wrappers.WrapperBookDto;
 import io.github.vinifillos.integrationTests.testContainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -183,8 +184,10 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
     @Test
     @Order(5)
     void testFindAll() throws JsonProcessingException {
+
         var content = given().spec(specification)
                 .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .queryParams("page", 0, "size", 7, "direction", "asc")
                 .when()
                 .get()
                 .then()
@@ -193,8 +196,8 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        List<BookDto> books = objectMapper.readValue(content, new TypeReference<>() {
-        });
+        WrapperBookDto wrapper = objectMapper.readValue(content, WrapperBookDto.class);
+        var books = wrapper.getEmbedded().getBooks();
 
         BookDto bookOne = books.getFirst();
 
@@ -205,13 +208,13 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
         assertNotNull(bookOne.getPrice());
         assertNotNull(bookOne.getLaunchDate());
 
-        assertEquals(1, bookOne.getId());
+        assertEquals(12, bookOne.getId());
 
-        assertEquals("Working effectively with legacy code", bookOne.getTitle());
-        assertEquals("Michael C. Feathers", bookOne.getAuthor());
-        assertEquals(49.0D, bookOne.getPrice());
+        assertEquals("Big Data: como extrair volume, variedade, velocidade e valor da avalanche de informação cotidiana", bookOne.getTitle());
+        assertEquals("Viktor Mayer-Schonberger e Kenneth Kukier", bookOne.getAuthor());
+        assertEquals(54.0D, bookOne.getPrice());
 
-        BookDto bookNine = books.get(8);
+        BookDto bookNine = books.get(4);
 
         assertNotNull(bookNine);
         assertNotNull(bookNine.getId());
@@ -220,11 +223,11 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
         assertNotNull(bookNine.getPrice());
         assertNotNull(bookNine.getLaunchDate());
 
-        assertEquals(9, bookNine.getId());
+        assertEquals(8, bookNine.getId());
 
-        assertEquals("Java Concurrency in Practice", bookNine.getTitle());
-        assertEquals("Brian Goetz e Tim Peierls", bookNine.getAuthor());
-        assertEquals(80.0D, bookNine.getPrice());
+        assertEquals("Domain Driven Design", bookNine.getTitle());
+        assertEquals("Eric Evans", bookNine.getAuthor());
+        assertEquals(92.0D, bookNine.getPrice());
     }
 
     @Test
