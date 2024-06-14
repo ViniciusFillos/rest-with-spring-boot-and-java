@@ -263,7 +263,6 @@ class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
                 .statusCode(403);
     }
 
-
     private void mockPerson() {
         personDto.setFirstName("Richard");
         personDto.setLastName("Stallman");

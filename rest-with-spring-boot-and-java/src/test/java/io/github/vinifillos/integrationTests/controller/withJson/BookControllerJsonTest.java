@@ -248,6 +248,32 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
                 .statusCode(403);
     }
 
+    @Test
+    @Order(9)
+    void testHATEOAS() {
+        var content = given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .queryParams("page", 0, "size", 3, "direction", "desc")
+                .when()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/api/book/v1/1\"}}}"));
+        assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/api/book/v1/6\"}}}"));
+        assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/api/book/v1/14\"}}}"));
+
+        assertTrue(content.contains("\"page\":{\"size\":3,\"totalElements\":15,\"totalPages\":5,\"number\":0}}"));
+
+        assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/api/book/v1?direction=asc&page=4&size=3&sort=title,desc\"}}"));
+        assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/api/book/v1?direction=asc&page=1&size=3&sort=title,desc\"}"));
+        assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/api/book/v1?page=0&size=3&direction=asc\"}"));
+        assertTrue(content.contains("{\"first\":{\"href\":\"http://localhost:8888/api/book/v1?direction=asc&page=0&size=3&sort=title,desc\"}"));
+    }
+
     private void mockBook() {
         bookDto.setTitle("Clean Code");
         bookDto.setAuthor("Robert C. Martin");

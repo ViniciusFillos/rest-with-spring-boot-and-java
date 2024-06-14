@@ -303,6 +303,37 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
                 .statusCode(403);
     }
 
+    @Test
+    @Order(7)
+    void testHATEOAS() {
+
+        var content = given().spec(specification)
+                .config(RestAssuredConfig.config()
+                        .encoderConfig(EncoderConfig.encoderConfig()
+                                .encodeContentTypeAs(ConfigTest.CONTENT_TYPE_YML, ContentType.TEXT)))
+                .contentType(ConfigTest.CONTENT_TYPE_YML)
+                .accept(ConfigTest.CONTENT_TYPE_YML)
+                .queryParams("page", 0, "size", 3, "direction", "desc")
+                .when()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        assertTrue(content.contains("rel: \"self\"\n    href: \"http://localhost:8888/api/book/v1/1\""));
+        assertTrue(content.contains("rel: \"self\"\n    href: \"http://localhost:8888/api/book/v1/6\""));
+        assertTrue(content.contains("- rel: \"self\"\n    href: \"http://localhost:8888/api/book/v1/14\""));
+
+        assertTrue(content.contains("page:\n  size: 3\n  totalElements: 15\n  totalPages: 5\n  number: 0"));
+
+        assertTrue(content.contains("rel: \"first\"\n  href: \"http://localhost:8888/api/book/v1?direction=asc&page=0&size=3&sort=title,desc\""));
+        assertTrue(content.contains("rel: \"self\"\n  href: \"http://localhost:8888/api/book/v1?page=0&size=3&direction=asc\""));
+        assertTrue(content.contains("rel: \"next\"\n  href: \"http://localhost:8888/api/book/v1?direction=asc&page=1&size=3&sort=title,desc\""));
+        assertTrue(content.contains("rel: \"last\"\n  href: \"http://localhost:8888/api/book/v1?direction=asc&page=4&size=3&sort=title,desc\""));
+    }
+
     private void mockBook() {
         bookDto.setTitle("Clean Code");
         bookDto.setAuthor("Robert C. Martin");

@@ -330,6 +330,32 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertTrue(person.getEnabled());
     }
 
+    @Test
+    @Order(9)
+    void testHATEOAS() {
+        var content = given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_JSON)
+                .queryParams("page", 0, "size", 3, "direction", "desc")
+                .when()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/api/person/v1/96\"}}}"));
+        assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/api/person/v1/258\"}}}"));
+        assertTrue(content.contains("\"_links\":{\"self\":{\"href\":\"http://localhost:8888/api/person/v1/764\"}}}"));
+
+        assertTrue(content.contains("\"page\":{\"size\":3,\"totalElements\":1005,\"totalPages\":335,\"number\":0}}"));
+
+        assertTrue(content.contains("\"last\":{\"href\":\"http://localhost:8888/api/person/v1?direction=asc&page=334&size=3&sort=firstName,desc\"}}"));
+        assertTrue(content.contains("\"next\":{\"href\":\"http://localhost:8888/api/person/v1?direction=asc&page=1&size=3&sort=firstName,desc\"}"));
+        assertTrue(content.contains("\"self\":{\"href\":\"http://localhost:8888/api/person/v1?page=0&size=3&direction=asc\"}"));
+        assertTrue(content.contains("{\"first\":{\"href\":\"http://localhost:8888/api/person/v1?direction=asc&page=0&size=3&sort=firstName,desc\"}"));
+    }
+
     private void mockPerson() {
         personDto.setFirstName("Vinicius");
         personDto.setLastName("Fillos");

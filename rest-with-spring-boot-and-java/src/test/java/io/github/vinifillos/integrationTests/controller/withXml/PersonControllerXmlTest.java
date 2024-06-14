@@ -353,6 +353,34 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertTrue(person.getEnabled());
     }
 
+    @Test
+    @Order(9)
+    void testHATEOAS() {
+
+        var content = given().spec(specification)
+                .contentType(ConfigTest.CONTENT_TYPE_XML)
+                .accept(ConfigTest.CONTENT_TYPE_XML)
+                .queryParams("page", 0, "size", 3, "direction", "desc")
+                .when()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/person/v1/96</href></links>"));
+        assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/person/v1/258</href></links>"));
+        assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/person/v1/764</href></links>"));
+
+        assertTrue(content.contains("<page><size>3</size><totalElements>1005</totalElements><totalPages>335</totalPages><number>0</number></page>"));
+
+        assertTrue(content.contains("<links><rel>last</rel><href>http://localhost:8888/api/person/v1?direction=asc&amp;page=334&amp;size=3&amp;sort=firstName,desc</href></links>"));
+        assertTrue(content.contains("<links><rel>next</rel><href>http://localhost:8888/api/person/v1?direction=asc&amp;page=1&amp;size=3&amp;sort=firstName,desc</href></links>"));
+        assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/person/v1?page=0&amp;size=3&amp;direction=asc</href></links>"));
+        assertTrue(content.contains("<links><rel>first</rel><href>http://localhost:8888/api/person/v1?direction=asc&amp;page=0&amp;size=3&amp;sort=firstName,desc</href></links>"));
+    }
+
     private void mockPerson() {
         person.setFirstName("Vinicius");
         person.setLastName("Fillos");

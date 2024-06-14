@@ -253,6 +253,7 @@ public class PersonControllerYamlTest extends AbstractIntegrationTest {
     @Test
     @Order(6)
     void testFindAll() {
+
         var wrapper = given().spec(specification)
                 .config(RestAssuredConfig.config()
                         .encoderConfig(EncoderConfig.encoderConfig()
@@ -364,6 +365,37 @@ public class PersonControllerYamlTest extends AbstractIntegrationTest {
         assertEquals("Street Alfredo Kamisnki", person.getAddress());
         assertEquals("Male", person.getGender());
         assertTrue(person.getEnabled());
+    }
+
+    @Test
+    @Order(9)
+    void testHATEOAS() {
+
+        var content = given().spec(specification)
+                .config(RestAssuredConfig.config()
+                        .encoderConfig(EncoderConfig.encoderConfig()
+                                .encodeContentTypeAs(ConfigTest.CONTENT_TYPE_YML, ContentType.TEXT)))
+                .contentType(ConfigTest.CONTENT_TYPE_YML)
+                .accept(ConfigTest.CONTENT_TYPE_YML)
+                .queryParams("page", 0, "size", 3, "direction", "desc")
+                .when()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        assertTrue(content.contains("rel: \"self\"\n    href: \"http://localhost:8888/api/person/v1/96\""));
+        assertTrue(content.contains("rel: \"self\"\n    href: \"http://localhost:8888/api/person/v1/258\""));
+        assertTrue(content.contains("- rel: \"self\"\n    href: \"http://localhost:8888/api/person/v1/764\""));
+
+        assertTrue(content.contains("page:\n  size: 3\n  totalElements: 1005\n  totalPages: 335\n  number: 0"));
+
+        assertTrue(content.contains("rel: \"first\"\n  href: \"http://localhost:8888/api/person/v1?direction=asc&page=0&size=3&sort=firstName,desc\""));
+        assertTrue(content.contains("rel: \"self\"\n  href: \"http://localhost:8888/api/person/v1?page=0&size=3&direction=asc\""));
+        assertTrue(content.contains("rel: \"next\"\n  href: \"http://localhost:8888/api/person/v1?direction=asc&page=1&size=3&sort=firstName,desc\""));
+        assertTrue(content.contains("rel: \"last\"\n  href: \"http://localhost:8888/api/person/v1?direction=asc&page=334&size=3&sort=firstName,desc\""));
     }
 
     private void mockPerson() {
