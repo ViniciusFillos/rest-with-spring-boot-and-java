@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,38 +54,6 @@ class PersonServiceTest {
         assertEquals("First Name Test1", result.getFirstName());
         assertEquals("Last Name Test1", result.getLastName());
         assertEquals("Female", result.getGender());
-    }
-
-    @Test
-    void findAllPeople_WithoutData_ReturnsList() {
-        List<Person> list = input.mockEntityList();
-
-        when(personRepository.findAll()).thenReturn(list);
-        var people = personService.findAll();
-
-        assertNotNull(people);
-        assertEquals(14, people.size());
-
-        var personSeven = people.get(7);
-        var personFourteen = people.get(13);
-
-        assertNotNull(personSeven);
-        assertNotNull(personSeven.getKey());
-        assertNotNull(personSeven.getLinks());
-        assertTrue(personSeven.toString().contains("links: [</api/person/v1/7>;rel=\"self\"]"));
-        assertEquals("Addres Test7", personSeven.getAddress());
-        assertEquals("First Name Test7", personSeven.getFirstName());
-        assertEquals("Last Name Test7", personSeven.getLastName());
-        assertEquals("Female", personSeven.getGender());
-
-        assertNotNull(personFourteen);
-        assertNotNull(personFourteen.getKey());
-        assertNotNull(personFourteen.getLinks());
-        assertTrue(personFourteen.toString().contains("links: [</api/person/v1/13>;rel=\"self\"]"));
-        assertEquals("Addres Test13", personFourteen.getAddress());
-        assertEquals("First Name Test13", personFourteen.getFirstName());
-        assertEquals("Last Name Test13", personFourteen.getLastName());
-        assertEquals("Female", personFourteen.getGender());
     }
 
     @Test

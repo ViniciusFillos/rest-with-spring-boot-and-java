@@ -1,5 +1,6 @@
 package io.github.vinifillos.exceptions.handler;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import io.github.vinifillos.exceptions.ExceptionResponse;
 import io.github.vinifillos.exceptions.InvalidJwtAuthenticationException;
 import io.github.vinifillos.exceptions.RequiredObjectIsNullException;
@@ -39,7 +40,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InvalidJwtAuthenticationException.class)
+    @ExceptionHandler({InvalidJwtAuthenticationException.class, TokenExpiredException.class})
     public final ResponseEntity<ExceptionResponse> handleInvalidJwtAuthenticationException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 new Date(), ex.getMessage(), request.getDescription(false));

@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,38 +54,6 @@ class BookServiceTest {
         assertEquals("Author Test1", result.getAuthor());
         assertEquals(123.45D, result.getPrice());
         assertNotNull(result.getLaunchDate());
-    }
-
-    @Test
-    void findAllBooks_WithoutData_ReturnsList() {
-        List<Book> list = input.mockEntityList();
-        when(bookRepository.findAll()).thenReturn(list);
-
-        var books = service.findAll();
-
-        assertNotNull(books);
-        assertEquals(14,books.size());
-
-        var bookZero = books.getFirst();
-        var bookFourteen = books.get(13);
-
-        assertNotNull(bookZero);
-        assertNotNull(bookZero.getKey());
-        assertNotNull(bookZero.getLinks());
-        assertTrue(bookZero.toString().contains("links: [</api/book/v1/0>;rel=\"self\"]"));
-        assertEquals("Title Test0", bookZero.getTitle());
-        assertEquals("Author Test0", bookZero.getAuthor());
-        assertEquals(123.45D, bookZero.getPrice());
-        assertNotNull(bookZero.getLaunchDate());
-
-        assertNotNull(bookFourteen);
-        assertNotNull(bookFourteen.getKey());
-        assertNotNull(bookFourteen.getLinks());
-        assertTrue(bookFourteen.toString().contains("links: [</api/book/v1/13>;rel=\"self\"]"));
-        assertEquals("Title Test13", bookFourteen.getTitle());
-        assertEquals("Author Test13", bookFourteen.getAuthor());
-        assertEquals(123.45D, bookFourteen.getPrice());
-        assertNotNull(bookFourteen.getLaunchDate());
     }
 
     @Test

@@ -10,8 +10,7 @@ import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
-@EqualsAndHashCode
+@Data
 @XmlRootElement(name = "tokenDto")
 public class TokenDto implements Serializable {
 
