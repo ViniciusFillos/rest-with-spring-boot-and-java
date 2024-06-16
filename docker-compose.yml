@@ -1,0 +1,42 @@
+services:
+
+  db:
+    image: mysql:8.0.29
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: admin123
+      MYSQL_DATABASE: rest_with_spring_boot
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_TCP_PORT: 3308
+    ports:
+      - "3308:3308"
+    expose:
+      - "3308"
+    networks:
+      - vini-network
+
+  rest-with-spring-boot:
+    image: vinifillos/rest-with-spring-boot
+    restart: always
+    build: ./rest-with-spring-boot-and-java
+    working_dir: /rest-with-spring-boot-and-java
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING.DATASOURCE.URL: jdbc:mysql://db:3308/rest_with_spring_boot?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING.DATASOURCE.USERNAME: root
+      SPRING.DATASOURCE.PASSWORD:
+
+    ports:
+      - 80:80
+    command: mvn spring-boot:run
+    depends_on:
+      - db
+    networks:
+      - vini-network
+networks:
+  vini-network:
+    driver: bridge
