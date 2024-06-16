@@ -28,7 +28,7 @@ server:
   port: 8888
 
 file:
-  upload-dir: /Code/UploadDir
+  upload-dir: /home/runner/work/rest-with-spring-boot-and-java/UploadDir
 
 security:
   jwt:
