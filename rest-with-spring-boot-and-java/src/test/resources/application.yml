@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: rest-with-spring-boot-and-java
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+
+cors:
+  originPatterns: http://localhost:8080,http://localhost:3000,http://vinifillos.com.br
+
+springdoc:
+  paths-to-match:
+    - /auth/**
+    - /api/**/v1/**
+  swagger-ui:
+    use-root-path: true
+
+server:
+  port: 8888
+
+file:
+  upload-dir: /home/runner/work/rest-with-spring-boot-and-java/UploadDir
+
+security:
+  jwt:
+    token:
+      secret-key: 53cr37
+      expire-length: 3600000
